@@ -133,7 +133,7 @@
             <Ellipse Width="12" Height="12" Stroke="Black" Margin="0,0,3,0" x:Name="IPStatus"
                      Fill="{Binding ZusiConnectionState, Converter={StaticResource Int2BrushConverter}, ElementName=mainWindow, Mode=OneWay}"         
                      ToolTip="{Binding ZusiConnectionString, ElementName=mainWindow, Mode=OneWay}">
-                <!--
+                <!-- **HLI
                      <Ellipse.InputBindings>
                               <MouseBinding Gesture="LeftClick" Command="{x:Static local:MainWindow.CommandOpenIPConnConf}" />
                       </Ellipse.InputBindings>
