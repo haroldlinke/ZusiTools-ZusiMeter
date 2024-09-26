@@ -1,0 +1,975 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- version 10.08.2018 -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+	<!-- ******************************************************************** -->
+	<!-- simple types -->
+
+	<!-- Hintergrundmodus -->
+	<xs:simpleType name="st_backgroundmode">
+		<xs:annotation>
+			<xs:documentation>Hintergrundmodus</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="hammerEffect"/>
+			<xs:enumeration value="burlwood"/>
+			<xs:enumeration value="userimage"/>
+			<xs:enumeration value="color"/>
+			<xs:enumeration value="text"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- Farbe eines Melders -->
+	<xs:simpleType name="st_colorenum">
+		<xs:annotation>
+			<xs:documentation>Farbe eines Melders</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Red"/>
+			<xs:enumeration value="Yellow"/>
+			<xs:enumeration value="Green"/>
+			<xs:enumeration value="Blue"/>
+			<xs:enumeration value="White"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- Zeigertyp -->
+	<xs:simpleType name="st_needleface">
+		<xs:annotation>
+			<xs:documentation>Aussehen des Zeigers</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Simple"/>
+			<xs:enumeration value="VDO"/>
+			<xs:enumeration value="Deuta"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- Farbwert #FFFFFFFF -->
+	<xs:simpleType name="st_color">
+		<xs:annotation>
+			<xs:documentation>Farbwert (z.B. #FFFFFFFF)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="#([0-9a-fA-F]{2}){4}"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- Component-Typen -->
+	<xs:simpleType name="st_componenttype">
+		<xs:annotation>
+			<xs:documentation>Component-Typen</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ComponentFahrtrichtung"/>
+			<xs:enumeration value="ComponentTueren"/>
+			<xs:enumeration value="ComponentNotbremssystem"/>
+			<xs:enumeration value="ComponentSifa"/>
+			<xs:enumeration value="ComponentStromabnehmer"/>
+			<xs:enumeration value="ComponentZugbeeinflussungA"/>
+			<xs:enumeration value="ComponentLZB"/>
+			<xs:enumeration value="ComponentFahrsperre"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- Aufzählung der IDs für Leuchtmelder -->
+	<xs:simpleType name="st_controllamp_id">
+		<xs:annotation>
+			<xs:documentation>Aufzählung der IDs für Leuchtmelder</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="AFB"/>
+			<xs:enumeration value="Batteriehauptschalter"/>
+			<xs:enumeration value="Bremsprobefunktion"/>
+			<xs:enumeration value="Hauptschalter"/>
+			<xs:enumeration value="LM_Drehzahlverstellung"/>
+			<xs:enumeration value="LM_FahrtrichtungM"/>
+			<xs:enumeration value="LM_FahrtrichtungVor"/>
+			<xs:enumeration value="LM_FahrtrichtungZurueck"/>
+			<xs:enumeration value="LM_Federspeicherbremse"/>
+			<xs:enumeration value="LM_Getriebe"/>
+			<xs:enumeration value="LM_Gleiten"/>
+			<xs:enumeration value="LM_HBremse"/>
+			<xs:enumeration value="LM_Hochabbremsung"/>
+			<xs:enumeration value="LM_MgBremse"/>
+			<xs:enumeration value="LM_RBremse"/>
+			<xs:enumeration value="LM_Schleudern"/>
+			<xs:enumeration value="LM_Schnellbremsung"/>
+			<xs:enumeration value="LM_SteuerwagenDrehzahlverstellung"/>
+			<xs:enumeration value="LM_SteuerwagenGetriebe"/>
+			<xs:enumeration value="LM_SteuerwagenGleiten"/>
+			<xs:enumeration value="LM_SteuerwagenHBremse"/>
+			<xs:enumeration value="LM_SteuerwagenRBremse"/>
+			<xs:enumeration value="LM_SteuerwagenSchleudern"/>
+			<xs:enumeration value="Luefter"/>
+			<xs:enumeration value="Luftpresser"/>
+			<xs:enumeration value="Schienenstoss"/>
+			<xs:enumeration value="Stahlbruecke"/>
+			<!-- Spezial (nur LMSifa aus StatusSifa) -->
+			<xs:enumeration value="StatusSifa"/>
+			<xs:enumeration value="Steinbruecke"/>
+			<xs:enumeration value="SteuerwagenHauptschalter"/>
+			<xs:enumeration value="SteuerwagenLuefter"/>
+			<xs:enumeration value="SteuerwagenTrennschütz"/>
+			<xs:enumeration value="Trennschuetz"/>
+			<xs:enumeration value="Tunnel"/>
+			<xs:enumeration value="ZugEntgleist"/>
+			<xs:enumeration value="ZustandFederspeicherbremse"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- Aufzählung der IDs für Instrumente -->
+	<xs:simpleType name="st_gauge_id">
+		<xs:annotation>
+			<xs:documentation>Aufzählung der IDs für Instrumente</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="None"/>
+			<xs:enumeration value="AFBSollgeschwindigkeit"/>
+			<xs:enumeration value="BeschleunigungX"/>
+			<xs:enumeration value="BeschleunigungY"/>
+			<xs:enumeration value="BeschleunigungZ"/>
+			<xs:enumeration value="Bremsprobefunktion"/>
+			<xs:enumeration value="Datum"/>
+			<xs:enumeration value="DrehBeschleunigungX"/>
+			<xs:enumeration value="DrehBeschleunigungY"/>
+			<xs:enumeration value="DrehBeschleunigungZ"/>
+			<xs:enumeration value="DruckBremszylinder"/>
+			<xs:enumeration value="DruckHauptLuftBehaelter"/>
+			<xs:enumeration value="DruckHauptluftleitung"/>
+			<xs:enumeration value="DruckHilfsluftbehaelter"/>
+			<xs:enumeration value="DruckZeitbehaelter"/>
+			<xs:enumeration value="Fahrleitungsspannung"/>
+			<xs:enumeration value="Fahrstufe"/>
+			<xs:enumeration value="Fahrzeugintern_01"/>
+			<xs:enumeration value="Fahrzeugintern_02"/>
+			<xs:enumeration value="Fahrzeugintern_03"/>
+			<xs:enumeration value="Fahrzeugintern_04"/>
+			<xs:enumeration value="Fahrzeugintern_05"/>
+			<xs:enumeration value="Fahrzeugintern_06"/>
+			<xs:enumeration value="Fahrzeugintern_07"/>
+			<xs:enumeration value="Fahrzeugintern_08"/>
+			<xs:enumeration value="Fahrzeugintern_09"/>
+			<xs:enumeration value="Fahrzeugintern_10"/>
+			<xs:enumeration value="Fahrzeugintern_11"/>
+			<xs:enumeration value="Fahrzeugintern_12"/>
+			<xs:enumeration value="Fahrzeugintern_13"/>
+			<xs:enumeration value="Fahrzeugintern_14"/>
+			<xs:enumeration value="Fahrzeugintern_15"/>
+			<xs:enumeration value="Fahrzeugintern_16"/>
+			<xs:enumeration value="Fahrzeugintern_17"/>
+			<xs:enumeration value="Fahrzeugintern_18"/>
+			<xs:enumeration value="Fahrzeugintern_19"/>
+			<xs:enumeration value="Fahrzeugintern_20"/>
+			<xs:enumeration value="Fahrpultintern_01"/>
+			<xs:enumeration value="Fahrpultintern_02"/>
+			<xs:enumeration value="Fahrpultintern_03"/>
+			<xs:enumeration value="Fahrpultintern_04"/>
+			<xs:enumeration value="Fahrpultintern_05"/>
+			<xs:enumeration value="Fahrpultintern_06"/>
+			<xs:enumeration value="Fahrpultintern_07"/>
+			<xs:enumeration value="Fahrpultintern_08"/>
+			<xs:enumeration value="Fahrpultintern_09"/>
+			<xs:enumeration value="Fahrpultintern_10"/>
+			<xs:enumeration value="Fahrpultintern_11"/>
+			<xs:enumeration value="Fahrpultintern_12"/>
+			<xs:enumeration value="Fahrpultintern_13"/>
+			<xs:enumeration value="Fahrpultintern_14"/>
+			<xs:enumeration value="Fahrpultintern_15"/>
+			<xs:enumeration value="Fahrpultintern_16"/>
+			<xs:enumeration value="Fahrpultintern_17"/>
+			<xs:enumeration value="Fahrpultintern_18"/>
+			<xs:enumeration value="Fahrpultintern_19"/>
+			<xs:enumeration value="Fahrpultintern_20"/>
+			<xs:enumeration value="Fahrpultintern_21"/>
+			<xs:enumeration value="Fahrpultintern_22"/>
+			<xs:enumeration value="Fahrpultintern_23"/>
+			<xs:enumeration value="Fahrpultintern_24"/>
+			<xs:enumeration value="Fahrpultintern_25"/>
+			<xs:enumeration value="Fahrpultintern_26"/>
+			<xs:enumeration value="Fahrpultintern_27"/>
+			<xs:enumeration value="Fahrpultintern_28"/>
+			<xs:enumeration value="Fahrpultintern_29"/>
+			<xs:enumeration value="Fahrpultintern_30"/>
+			<xs:enumeration value="Fahrpultintern_31"/>
+			<xs:enumeration value="Fahrpultintern_32"/>
+			<xs:enumeration value="Fahrpultintern_33"/>
+			<xs:enumeration value="Fahrpultintern_34"/>
+			<xs:enumeration value="Fahrpultintern_35"/>
+			<xs:enumeration value="Fahrpultintern_36"/>
+			<xs:enumeration value="Fahrpultintern_37"/>
+			<xs:enumeration value="Fahrpultintern_38"/>
+			<xs:enumeration value="Fahrpultintern_39"/>
+			<xs:enumeration value="Fahrpultintern_40"/>
+			<xs:enumeration value="Geschwindigkeit"/>
+			<xs:enumeration value="GeschwindigkeitAbsolut"/>
+			<xs:enumeration value="GeschwindigkeitAbsolut_Schleudern"/>
+			<xs:enumeration value="Gleiskruemmung"/>
+			<xs:enumeration value="KilometrierungZugSpitze"/>
+			<xs:enumeration value="LM_Uhrzeit"/>
+			<xs:enumeration value="LuftstromFbv"/>
+			<xs:enumeration value="LuftstromZbv"/>
+			<xs:enumeration value="Motordrehmoment"/>
+			<xs:enumeration value="Motordrehzahl"/>
+			<xs:enumeration value="MotorlastNormiert"/>
+			<xs:enumeration value="Motorspannung"/>
+			<xs:enumeration value="Motorstrom"/>
+			<xs:enumeration value="Oberstrom"/>
+			<xs:enumeration value="StatusZugverband"/>
+                        <xs:enumeration value="Solldruck_Hauptluftleitung"/>
+			<xs:enumeration value="SteuerwagenFahrleitungsspannung"/>
+			<xs:enumeration value="SteuerwagenFahrstufe"/>
+			<xs:enumeration value="SteuerwagenHauptschalter"/>
+			<xs:enumeration value="SteuerwagenLuefter"/>
+			<xs:enumeration value="SteuerwagenMotordrehmoment"/>
+			<xs:enumeration value="SteuerwagenMotordrehzahl"/>
+			<xs:enumeration value="SteuerwagenMotorlastNormiert"/>
+			<xs:enumeration value="SteuerwagenMotorspannung"/>
+			<xs:enumeration value="SteuerwagenMotorstrom"/>
+			<xs:enumeration value="SteuerwagenOberstrom"/>
+			<xs:enumeration value="SteuerwagenTrennschütz"/>
+			<xs:enumeration value="SteuerwagenZugBremskraftSollAbsolutNormiert"/>
+			<xs:enumeration value="SteuerwagenZugBremskraftSollNormiert"/>
+			<xs:enumeration value="SteuerwagenZugkraftGesamt"/>
+			<xs:enumeration value="SteuerwagenZugkraftProAchse"/>
+			<xs:enumeration value="SteuerwagenZugkraftSollGesamt"/>
+			<xs:enumeration value="SteuerwagenZugkraftSollProAchse"/>
+			<xs:enumeration value="StreckenMaxGeschwindigkeit"/>
+			<xs:enumeration value="Stromabnehmer"/>
+			<xs:enumeration value="ZugBremskraftSollAbsolutNormiert"/>
+			<xs:enumeration value="ZugBremskraftSollNormiert"/>
+			<xs:enumeration value="ZugEntgleist"/>
+			<xs:enumeration value="ZugkraftGesamt"/>
+			<xs:enumeration value="ZugkraftProAchse"/>
+			<xs:enumeration value="ZugkraftSollGesamt"/>
+			<xs:enumeration value="ZugkraftSollProAchse"/>
+			<xs:enumeration value="ZugkraftvorschlagAutopilot"/>
+			<xs:enumeration value="ZurueckgelegterGesamtweg"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- Analoge Instrumenttypen -->
+	<xs:simpleType name="st_analoggaugetype">
+		<xs:annotation>
+			<xs:documentation>Analoge Instrumenttypen</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Accelerometer"/>
+			<xs:enumeration value="Amperemeter"/>
+			<xs:enumeration value="BrakeManometer"/>
+			<xs:enumeration value="Dynamometer"/>
+			<xs:enumeration value="FlowmeterA"/>
+			<xs:enumeration value="FlowmeterB"/>
+			<xs:enumeration value="Gauge"/>
+			<xs:enumeration value="Gyrometer"/>
+			<xs:enumeration value="Manometer"/>
+			<xs:enumeration value="Tachometer"/>
+			<xs:enumeration value="Torquemeter"/>
+			<xs:enumeration value="Uhr"/>
+			<xs:enumeration value="Voltmeter"/>
+			<xs:enumeration value="Fahrstufe"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- Digitale Instrumenttypen -->
+	<xs:simpleType name="st_digitalgaugetype">
+		<xs:annotation>
+			<xs:documentation>Digitale Instrumenttypen</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="DigitalAccelerometer"/>
+			<xs:enumeration value="DigitalAmperemeter"/>
+			<xs:enumeration value="DigitalChronometer"/>
+			<xs:enumeration value="DigitalDynamometer"/>
+			<xs:enumeration value="DigitalFahrstufe"/>
+			<xs:enumeration value="DigitalFahrschalter"/>
+			<xs:enumeration value="DigitalFlowmeterA"/>
+			<xs:enumeration value="DigitalFlowmeterB"/>
+			<xs:enumeration value="DigitalGauge"/>
+			<xs:enumeration value="DigitalGyrometer"/>
+			<xs:enumeration value="DigitalIntern"/>
+			<xs:enumeration value="DigitalManometer"/>
+			<xs:enumeration value="DigitalNextStop"/>
+			<xs:enumeration value="DigitalStreckenKm"/>
+			<xs:enumeration value="DigitalTachometer"/>
+			<xs:enumeration value="DigitalTorquemeter"/>
+			<xs:enumeration value="DigitalVoltmeter"/>
+			<xs:enumeration value="DigitalZugInfo"/>
+			<!-- text ZugInfo type-->
+			<xs:enumeration value="ZugInfoGauge">
+				<xs:annotation>
+					<xs:documentation>Darf nur für das Textinstrument verwendet werden.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<!-- special text watch type-->
+			<xs:enumeration value="ChronometerGauge">
+				<xs:annotation>
+					<xs:documentation>Darf nur für ein Text-Uhr verwendet werden.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- Horizontale Instrumenttypen -->
+	<xs:simpleType name="st_horzgaugetype">
+		<xs:annotation>
+			<xs:documentation>Horizontale Instrumenttypen</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="HorizontalTachometerGauge"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- Vertikale Instrumenttypen -->
+	<xs:simpleType name="st_vertgaugetype">
+		<xs:annotation>
+			<xs:documentation>Vertikale Instrumenttypen</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="VerticalTachometerGauge"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- Interaktive Instrumente -->
+	<xs:simpleType name="st_operatortype">
+		<xs:annotation>
+			<xs:documentation>Interaktive Instrumente</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="RailRunner"/>
+			<xs:enumeration value="SwitchPointInfo"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="st_doorsystems">
+		<xs:annotation>
+			<xs:documentation>Türsysteme</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="None"/>
+			<xs:enumeration value="SAT"/>
+			<xs:enumeration value="TB0"/>
+			<xs:enumeration value="TB5"/>
+			<xs:enumeration value="SST"/>
+			<xs:enumeration value="TAV"/>
+			<xs:enumeration value="UIC_WTB"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- Aufzählung der Theme-Typen-->
+	<xs:simpleType name="st_theme">
+		<xs:annotation>
+			<xs:documentation>Aufzählung der Theme-Typen</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="WhiteOnBlack"/>
+			<xs:enumeration value="BlackOnWhite"/>
+			<xs:enumeration value="Steuerwagen"/>
+			<xs:enumeration value="Tachometer"/>
+			<xs:enumeration value="Manometer"/>
+			<xs:enumeration value="Dynamometer"/>
+			<xs:enumeration value="Amperemeter"/>
+			<xs:enumeration value="Voltmeter"/>
+			<xs:enumeration value="Gyrometer"/>
+			<xs:enumeration value="Torquemeter"/>
+			<xs:enumeration value="Accelerometer"/>
+			<xs:enumeration value="Flowmeter"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- Aufzählung der Maßeinheiten -->
+	<xs:simpleType name="st_unit">
+		<xs:annotation>
+			<xs:documentation>Aufzählung der Maßeinheiten</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="None"/>
+			<xs:enumeration value="Copyright"/>
+			<xs:enumeration value="Pressure"/>
+			<xs:enumeration value="Speed_ms"/>
+			<xs:enumeration value="Speed_kmh"/>
+			<xs:enumeration value="Speed_mph"/>
+			<xs:enumeration value="Voltage"/>
+			<xs:enumeration value="Voltagex1000"/>
+			<xs:enumeration value="Current"/>
+			<xs:enumeration value="Currentx100"/>
+			<xs:enumeration value="Currentx1000"/>
+			<xs:enumeration value="Drehzahl"/>
+			<xs:enumeration value="Drehzahlx100"/>
+			<xs:enumeration value="Drehzahlx1000"/>
+			<xs:enumeration value="Kraft"/>
+			<xs:enumeration value="Kraftx100"/>
+			<xs:enumeration value="Kraftx1000"/>
+			<xs:enumeration value="Kraftx10000"/>
+			<xs:enumeration value="Beschleunigung"/>
+			<xs:enumeration value="Drehbeschleunigung"/>
+			<xs:enumeration value="Drehmoment"/>
+			<xs:enumeration value="Percent"/>
+			<xs:enumeration value="Length"/>
+			<xs:enumeration value="Lengthx1000"/>
+			<xs:enumeration value="Mass"/>
+			<xs:enumeration value="Mass_kg"/>
+			<xs:enumeration value="Mass_t"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- Aufzählung der Indicator-Typen (Tachometer) -->
+	<xs:simpleType name="st_indicator">
+		<xs:annotation>
+			<xs:documentation>Aufzählung der Indicator-Typen (Tachometer)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Off"/>
+			<xs:enumeration value="TrackMaxSpeed"/>
+			<xs:enumeration value="AFBTargetSpeed"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- Aufzählung der ExtraGaugeStyles -->
+	<xs:simpleType name="st_extragaugestyle">
+		<xs:annotation>
+			<xs:documentation>Aufzählung der ExtraGaugeStyles</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<!-- text gauge styles -->
+			<xs:enumeration value="ChronometerText"/>
+			<xs:enumeration value="ControlLampText"/>
+			<xs:enumeration value="DateText"/>
+			<xs:enumeration value="DigitalTextGauge"/>
+			<xs:enumeration value="ZugInfoTextGauge"/>
+			<!-- component styles -->
+			<xs:enumeration value="ComponentFahrsperreText"/>
+			<xs:enumeration value="ComponentFahrtrichtungText"/>
+			<xs:enumeration value="ComponentLZBText"/>
+			<xs:enumeration value="ComponentNotbremssystemText"/>
+			<xs:enumeration value="ComponentSifaText"/>
+			<xs:enumeration value="ComponentStromabnehmerText"/>
+			<xs:enumeration value="ComponentTuerenFreigabeText"/>
+			<xs:enumeration value="ComponentTuerenText"/>
+			<xs:enumeration value="ComponentZugbeeinflussungText"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- Aufzählung DisplayModeType -->
+	<xs:simpleType name="st_displaymode">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Graphic"/>
+			<xs:enumeration value="Text"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- ******************************************************************** -->
+	<!-- complex types -->
+
+	<!-- Basistyp für Instrumente -->
+	<xs:complexType name="ct_gauge_base">
+		<xs:annotation>
+			<xs:documentation>Basistyp für Instrumente</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="displayGroup" type="xs:string"/>
+		<xs:attribute name="displayName" type="xs:string"/>
+		<xs:attribute name="col" type="xs:int"/>
+		<xs:attribute name="row" type="xs:int"/>
+		<xs:attribute name="sizeX" type="xs:int" default="1"/>
+		<xs:attribute name="sizeY" type="xs:int" default="1"/>
+		<xs:attribute name="Background" type="xs:string"/>
+		<xs:attribute name="Foreground" type="xs:string"/>
+		<xs:attribute name="FtdID" type="st_gauge_id"/>
+		<xs:attribute name="Name" type="xs:string"/>
+		<xs:attribute name="Unit" type="st_unit"/>
+		<xs:attribute name="ValueMultiplier" type="xs:double"/>
+		<xs:attribute name="IsSteuerwagen" type="xs:boolean"/>
+		<xs:attribute name="ClassicStyle" type="xs:boolean"/>
+	</xs:complexType>
+
+	<!-- Basistyp für Analoginstrumente -->
+	<xs:complexType name="ct_analoggauge_base">
+		<xs:annotation>
+			<xs:documentation>Basistyp für Analoginstrumente</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ct_gauge_base">
+				<xs:attribute name="sizeX" type="xs:int" default="4"/>
+				<xs:attribute name="LabelingFrequency" type="xs:unsignedInt"/>
+				<xs:attribute name="Maximum" type="xs:double"/>
+				<xs:attribute name="Minimum" type="xs:double"/>
+				<xs:attribute name="SmallTickFrequency" type="xs:double"/>
+				<xs:attribute name="TickFrequency" type="xs:double"/>
+				<xs:attribute name="DefaultTheme" type="st_theme"/>
+				<xs:attribute name="Theme" type="st_theme"/>
+				<xs:attribute name="DialScale" type="xs:double"/>
+				<xs:attribute name="Indicator" type="st_indicator"/>
+				<xs:attribute name="SelectedMaximum" type="xs:unsignedInt"/>
+				<xs:attribute name="NeedleColor" type="st_color"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- Analoges Rundinstrument -->
+	<xs:complexType name="ct_analoggauge">
+		<xs:annotation>
+			<xs:documentation>Analoges Rundinstrument</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ct_analoggauge_base">
+				<xs:attribute name="sizeY" type="xs:int" default="4"/>
+				<xs:attribute name="type" type="st_analoggaugetype"/>
+				<xs:attribute name="GaugeNameFontSize" type="xs:double"/>
+				<xs:attribute name="HasDigitalDisplay" type="xs:boolean"/>
+				<xs:attribute name="HasOverflowLED" type="xs:boolean"/>
+				<xs:attribute name="HasPassepartout" type="xs:boolean"/>
+				<xs:attribute name="NeedleFace" type="st_needleface"/>
+				<xs:attribute name="NumDecimals" type="xs:unsignedInt"/>
+				<xs:attribute name="SelectedVariant" type="xs:unsignedInt"/>
+				<xs:attribute name="SuppressFirstTickLabel" type="xs:boolean"/>
+				<xs:attribute name="DialStartAngle" type="xs:double"/>
+				<xs:attribute name="DialEndAngle" type="xs:double"/>
+				<xs:attribute name="DialStrokeThickness" type="xs:double"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- Analoges horizontales Instrument -->
+	<xs:complexType name="ct_horzgauge">
+		<xs:annotation>
+			<xs:documentation>Analoges horizontales Instrument</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ct_analoggauge_base">
+				<xs:sequence>
+					<xs:element name="AltID" type="st_gauge_id" minOccurs="0" maxOccurs="2"/>
+				</xs:sequence>
+				<xs:attribute name="type" type="st_horzgaugetype"/>
+				<xs:attribute name="FtdID" type="st_gauge_id" use="required"/>
+				<xs:attribute name="Name" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- Analoges vertikales Instrument -->
+	<xs:complexType name="ct_vertgauge">
+		<xs:annotation>
+			<xs:documentation>Analoges vertikales Instrument</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ct_analoggauge_base">
+				<xs:sequence>
+					<xs:element name="AltID" type="st_gauge_id" minOccurs="0" maxOccurs="2"/>
+				</xs:sequence>
+				<xs:attribute name="sizeX" type="xs:int" default="1"/>
+				<xs:attribute name="sizeY" type="xs:int" default="4"/>
+				<xs:attribute name="type" type="st_vertgaugetype"/>
+				<xs:attribute name="FtdID" type="st_gauge_id" use="required"/>
+				<xs:attribute name="Name" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- Digitales Instrument -->
+	<xs:complexType name="ct_digitalgauge">
+		<xs:annotation>
+			<xs:documentation>Digitales Instrument</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ct_gauge_base">
+				<xs:attribute name="sizeX" type="xs:int" default="4"/>
+				<xs:attribute name="type" type="st_digitalgaugetype"/>
+				<xs:attribute name="volume" type="xs:double" use="optional"/>
+				<xs:attribute name="NumDecimals" type="xs:unsignedInt"/>
+				<xs:attribute name="DialScale" type="xs:double"/>
+				<xs:attribute name="SelectedVariant" type="xs:unsignedInt"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- Textinstrument -->
+	<xs:complexType name="ct_textgauge">
+		<xs:annotation>
+			<xs:documentation>Textinstrument</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ct_digitalgauge">
+				<xs:sequence>
+					<xs:element name="AltID" type="st_gauge_id" minOccurs="0" maxOccurs="2"/>
+				</xs:sequence>
+				<xs:attribute name="sizeX" type="xs:int" default="2"/>
+				<xs:attribute name="style" type="st_extragaugestyle"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- Leuchtmelder -->
+	<xs:complexType name="ct_controllamp">
+		<xs:annotation>
+			<xs:documentation>Leuchtmelder</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ct_gauge_base">
+				<xs:attribute name="sizeX" type="xs:int" default="2"/>
+				<xs:attribute name="id" type="st_controllamp_id" use="required"/>
+				<xs:attribute name="caption" type="xs:string" use="required"/>
+				<xs:attribute name="color" type="st_colorenum" default="White"/>
+				<xs:attribute name="statusmelder" type="st_controllamp_id"/>
+				<xs:attribute name="steuerwagenid" type="st_controllamp_id"/>
+				<xs:attribute name="style" type="st_extragaugestyle"/>
+				<xs:attribute name="type" type="xs:string" use="optional"/>
+				<xs:attribute name="volume" type="xs:double" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- Leuchtmelder Text -->
+	<xs:complexType name="ct_controllamp_tx">
+		<xs:annotation>
+			<xs:documentation>Leuchtmelder</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ct_controllamp">
+				<xs:attribute name="sizeX" type="xs:int" default="1"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- Leuchtmelder rot -->
+	<xs:complexType name="ct_controllamp_red">
+		<xs:annotation>
+			<xs:documentation>Leuchtmelder rot</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ct_controllamp">
+				<xs:attribute name="color" type="st_colorenum" default="Red"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- Leuchtmelder Text rot -->
+	<xs:complexType name="ct_controllamp_red_tx">
+		<xs:annotation>
+			<xs:documentation>Leuchtmelder rot</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ct_controllamp">
+				<xs:attribute name="sizeX" type="xs:int" default="1"/>
+				<xs:attribute name="color" type="st_colorenum" default="Red"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- Leuchtmelder gelb -->
+	<xs:complexType name="ct_controllamp_yellow">
+		<xs:annotation>
+			<xs:documentation>Leuchtmelder gelb</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ct_controllamp">
+				<xs:attribute name="color" type="st_colorenum" default="Yellow"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- Leuchtmelder Text gelb -->
+	<xs:complexType name="ct_controllamp_yellow_tx">
+		<xs:annotation>
+			<xs:documentation>Leuchtmelder gelb</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ct_controllamp">
+				<xs:attribute name="sizeX" type="xs:int" default="1"/>
+				<xs:attribute name="color" type="st_colorenum" default="Yellow"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- Leuchtmelder grün -->
+	<xs:complexType name="ct_controllamp_green">
+		<xs:annotation>
+			<xs:documentation>Leuchtmelder grün</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ct_controllamp">
+				<xs:attribute name="color" type="st_colorenum" default="Green"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- Leuchtmelder Text grün -->
+	<xs:complexType name="ct_controllamp_green_tx">
+		<xs:annotation>
+			<xs:documentation>Leuchtmelder grün</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ct_controllamp">
+				<xs:attribute name="sizeX" type="xs:int" default="1"/>
+				<xs:attribute name="color" type="st_colorenum" default="Green"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- Leuchtmelder blau -->
+	<xs:complexType name="ct_controllamp_blue">
+		<xs:annotation>
+			<xs:documentation>Leuchtmelder blau</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ct_controllamp">
+				<xs:attribute name="color" type="st_colorenum" default="Blue"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- Leuchtmelder Text blau -->
+	<xs:complexType name="ct_controllamp_blue_tx">
+		<xs:annotation>
+			<xs:documentation>Leuchtmelder blau</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ct_controllamp">
+				<xs:attribute name="sizeX" type="xs:int" default="1"/>
+				<xs:attribute name="color" type="st_colorenum" default="Blue"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- Leuchtmelder weiß -->
+	<xs:complexType name="ct_controllamp_white">
+		<xs:annotation>
+			<xs:documentation>Leuchtmelder weiß</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ct_controllamp">
+				<xs:attribute name="color" type="st_colorenum" default="White"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- Leuchtmelder Text weiß -->
+	<xs:complexType name="ct_controllamp_white_tx">
+		<xs:annotation>
+			<xs:documentation>Leuchtmelder weiß</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ct_controllamp">
+				<xs:attribute name="sizeX" type="xs:int" default="1"/>
+				<xs:attribute name="color" type="st_colorenum" default="White"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<!-- Leuchtmelder Sifa mit Ton -->
+	<xs:complexType name="ct_controllamp_soundedsifa">
+		<xs:annotation>
+			<xs:documentation>Leuchtmelder Sifa mit Ton</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ct_controllamp">
+				<xs:attribute name="type" type="xs:string" default="SoundedMelderSifa"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- Component-Typ -->
+	<xs:complexType name="ct_component">
+		<xs:annotation>
+			<xs:documentation>Component-Typ</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ct_gauge_base">
+				<xs:attribute name="sizeX" type="xs:int" default="4"/>
+				<xs:attribute name="type" type="st_componenttype" use="required"/>
+				<xs:attribute name="style" type="st_extragaugestyle"/>
+				<!--<xs:attribute name="DesiredDoorSystem" type="st_doorsystems"/>-->
+				<xs:attribute name="SelectedVariant" type="xs:unsignedInt" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- Interaktives Instrument -->
+	<xs:complexType name="ct_operator">
+		<xs:annotation>
+			<xs:documentation>Interaktives Instrument</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="displayGroup" type="xs:string"/>
+		<xs:attribute name="displayName" type="xs:string"/>
+		<xs:attribute name="type" type="st_operatortype" use="required"/>
+		<xs:attribute name="col" type="xs:int"/>
+		<xs:attribute name="row" type="xs:int"/>
+		<xs:attribute name="sizeX" type="xs:int" default="4"/>
+		<xs:attribute name="sizeY" type="xs:int" default="1"/>
+		<xs:attribute name="volume" type="xs:double"/>
+	</xs:complexType>
+
+	<!-- Liste der analogen Instrumente -->
+	<xs:complexType name="ct_analoggauges">
+		<xs:annotation>
+			<xs:documentation>Liste der analogen Instrumente</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Gauge" maxOccurs="unbounded" type="ct_analoggauge"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- Liste der analogen horizontalen Instrumente -->
+	<xs:complexType name="ct_horzgauges">
+		<xs:annotation>
+			<xs:documentation>Liste der analogen horizontalen Instrumente</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Gauge" maxOccurs="unbounded" type="ct_horzgauge"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- Liste der analogen vertikalen Instrumente -->
+	<xs:complexType name="ct_vertgauges">
+		<xs:annotation>
+			<xs:documentation>Liste der analogen vertikalen Instrumente</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Gauge" maxOccurs="unbounded" type="ct_vertgauge"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- Liste der digitalen Instrumente -->
+	<xs:complexType name="ct_digitalgauges">
+		<xs:annotation>
+			<xs:documentation>Liste der digitalen Instrumente</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Gauge" maxOccurs="unbounded" type="ct_digitalgauge"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- Liste der Textinstrumente -->
+	<xs:complexType name="ct_textgauges">
+		<xs:annotation>
+			<xs:documentation>Liste der Textinstrumente</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Gauge" maxOccurs="unbounded" type="ct_textgauge"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- Liste der Leuchtmelder -->
+	<xs:complexType name="ct_controlLamps">
+		<xs:annotation>
+			<xs:documentation>Liste der Leuchtmelder</xs:documentation>
+		</xs:annotation>
+		<xs:choice minOccurs="1" maxOccurs="unbounded">
+			<xs:element name="ControlLamp" type="ct_controllamp"/>
+			<xs:element name="ControlLampRed" type="ct_controllamp_red"/>
+			<xs:element name="ControlLampYellow" type="ct_controllamp_yellow"/>
+			<xs:element name="ControlLampGreen" type="ct_controllamp_green"/>
+			<xs:element name="ControlLampBlue" type="ct_controllamp_blue"/>
+			<xs:element name="ControlLampWhite" type="ct_controllamp_white"/>
+			<xs:element name="ControlLampSoundedSifa" type="ct_controllamp_soundedsifa"/>
+		</xs:choice>
+	</xs:complexType>
+
+	<!-- Liste der Textleuchtmelder -->
+	<xs:complexType name="ct_textcontrolLamps">
+		<xs:annotation>
+			<xs:documentation>Liste der Texteuchtmelder</xs:documentation>
+		</xs:annotation>
+		<xs:choice minOccurs="1" maxOccurs="unbounded">
+			<xs:element name="ControlLamp" type="ct_controllamp_tx"/>
+			<xs:element name="ControlLampRed" type="ct_controllamp_red_tx"/>
+			<xs:element name="ControlLampYellow" type="ct_controllamp_yellow_tx"/>
+			<xs:element name="ControlLampGreen" type="ct_controllamp_green_tx"/>
+			<xs:element name="ControlLampBlue" type="ct_controllamp_blue_tx"/>
+			<xs:element name="ControlLampWhite" type="ct_controllamp_white_tx"/>
+		</xs:choice>
+	</xs:complexType>
+
+	<!-- Liste der Components -->
+	<xs:complexType name="ct_components">
+		<xs:annotation>
+			<xs:documentation>Liste der Components</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Component" maxOccurs="unbounded" type="ct_component"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- Liste der Textcomponents -->
+	<xs:complexType name="ct_textcomponents">
+		<xs:annotation>
+			<xs:documentation>Liste der Textcomponents</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Component" maxOccurs="unbounded" type="ct_component"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- Liste der interaktiven Instrumente -->
+	<xs:complexType name="ct_operators">
+		<xs:annotation>
+			<xs:documentation>Liste der interaktiven Instrumente</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Operator" maxOccurs="unbounded" type="ct_operator"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- Background (optional) -->
+	<xs:complexType name="ct_background">
+		<xs:annotation>
+			<xs:documentation>Hintergrund des Layouts</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Value" minOccurs="0" maxOccurs="1" type="xs:string"/>
+		</xs:sequence>
+		<xs:attribute name="mode" type="st_backgroundmode" use="required"/>
+	</xs:complexType>
+
+	<!-- Layout -->
+	<xs:complexType name="ct_layout">
+		<xs:annotation>
+			<xs:documentation>Layout</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Background" minOccurs="0" maxOccurs="1" type="ct_background"/>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element name="RoundGauge" type="ct_analoggauge"/>
+				<xs:element name="HorzGauge" type="ct_horzgauge"/>
+				<xs:element name="VertGauge" type="ct_vertgauge"/>
+				<xs:element name="DigitalGauge" type="ct_digitalgauge"/>
+				<xs:element name="TextGauge" type="ct_textgauge"/>
+				<xs:element name="ControlLamp" type="ct_controllamp"/>
+				<xs:element name="TextControlLamp" type="ct_controllamp"/>
+				<xs:element name="Component" type="ct_component"/>
+				<xs:element name="TextComponent" type="ct_component"/>
+				<xs:element name="Operator" type="ct_operator"/>
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="version" type="xs:float" use="required"/>
+		<xs:attribute name="displayMode" type="st_displaymode" use="optional"/>
+		<xs:attribute name="zoom" type="xs:float" use="optional"/>
+	</xs:complexType>
+
+	<!-- Rootelement-Typ -->
+	<xs:complexType name="ct_zusimeter">
+		<xs:annotation>
+			<xs:documentation>Rootelement-Typ</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:sequence>
+				<xs:element name="AnalogGauges" type="ct_analoggauges" maxOccurs="1"/>
+				<xs:element name="HorizontalGauges" type="ct_horzgauges" maxOccurs="1"/>
+				<xs:element name="VerticalGauges" type="ct_vertgauges" maxOccurs="1"/>
+				<xs:element name="DigitalGauges" type="ct_digitalgauges" maxOccurs="1"/>
+				<xs:element name="ControlLamps" type="ct_controlLamps" maxOccurs="1"/>
+				<xs:element name="Components" type="ct_components" maxOccurs="1"/>
+				<xs:element name="TextGauges" type="ct_textgauges" maxOccurs="1"/>
+				<xs:element name="TextControlLamps" type="ct_textcontrolLamps" maxOccurs="1"/>
+				<xs:element name="TextComponents" type="ct_textcomponents" maxOccurs="1"/>
+				<xs:element name="Operators" type="ct_operators"/>
+			</xs:sequence>
+			<xs:sequence>
+				<xs:element name="Layout" type="ct_layout"/>
+			</xs:sequence>
+		</xs:choice>
+		<xs:attribute name="version" type="xs:float" use="optional"/>
+	</xs:complexType>
+
+	<!-- root element -->
+	<xs:element name="ZusiMeter" type="ct_zusimeter"/>
+</xs:schema>

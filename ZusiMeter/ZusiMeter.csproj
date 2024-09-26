@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows7.0</TargetFramework>
+    <OutputType>WinExe</OutputType>
+    <LangVersion>9.0</LangVersion>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWPF>true</UseWPF>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <AssemblyTitle>ZusiMeter</AssemblyTitle>
+    <Copyright>Copyright © 2017-2024 Holger Maaß, Harold Linke</Copyright>
+    <Product>ZusiMeter</Product>
+    <AssemblyVersion></AssemblyVersion>
+    <ApplicationIcon>Resources\zusimeter.ico</ApplicationIcon>
+    <StartupObject>ZusiMeter.Startup</StartupObject>
+   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="AsmInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\zusimeter.ico" />
+  </ItemGroup>
+   <ItemGroup>
+    <PackageReference Include="Sovoma" Version="6.2.1" />
+    <PackageReference Include="Sovoma.WPF" Version="6.7.3" />
+    <PackageReference Include="System.IO" Version="4.3.0" />
+    <PackageReference Include="ZusiMeterGaugesLib" Version="6.3.11" />
+    <PackageReference Include="Zusisuplib" Version="1.0.6" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ZusiMeter">
+      <HintPath>ZusiMeter.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="images\bkgnd.png" />
+    <Resource Include="images\graphic.jpg" />
+    <Resource Include="images\listviewitem.png" />
+    <Resource Include="images\textbased.jpg" />
+    <Resource Include="images\window_bkgnd.png" />
+    <Resource Include="images\window_bkgnd_blue.png" />
+    <Resource Include="themes\images\bkgnd.png" />
+    <Resource Include="Resources\zusimeter.ico" />
+    <Resource Include="zusimeter.xsd" />
+    <Resource Include="GaugePool.xml" />
+    <Resource Include="History.cs" />
+  </ItemGroup>
+</Project>
