@@ -45,6 +45,13 @@ namespace ZusiMeter
     // - Die ZusiMeterLayouts werden jetzt standardmäßig im öffentlichen Zusi-Datenverzeichnis gespeichert:
     //   %Daten%\_Tools\ZusiMeter\ZusiMeterLayouts
     //   Aus Kompatibilitätsgründen wird das bisherige Verzeichnis "Dokumente/ZusiMeterLayouts" weitervendet, wenn es existiert.
+
+    // 6.4.1 - 25.09.2024
+    // Korrekturen:
+    // - Verbindung mit ZUSI geht wieder
+    // Änderungen:
+    // - Angezeigte Version von ZusiMeter 6.4.1
+
 }
 
 
