@@ -4,8 +4,6 @@ VisualStudioVersion = 17.11.35219.272
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZusiMeter", "ZusiMeter\ZusiMeter.csproj", "{6003E196-7694-421D-9BE2-1A84E1336AEC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZusiMeterKonfigurator", "ZusiMeterKonfigurator\ZusiMeterKonfigurator.csproj", "{3B138448-DEA8-4E11-9994-D8169D7C1940}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -16,10 +14,6 @@ Global
 		{6003E196-7694-421D-9BE2-1A84E1336AEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6003E196-7694-421D-9BE2-1A84E1336AEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6003E196-7694-421D-9BE2-1A84E1336AEC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3B138448-DEA8-4E11-9994-D8169D7C1940}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3B138448-DEA8-4E11-9994-D8169D7C1940}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3B138448-DEA8-4E11-9994-D8169D7C1940}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3B138448-DEA8-4E11-9994-D8169D7C1940}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -4,14 +4,30 @@
                     xmlns:slcv="clr-namespace:Sovoma.WPF.Converter;assembly=Sovoma.WPF"
                     xmlns:zcv="clr-namespace:ZusiMeterGaugesLib.Converter;assembly=ZusiMeterGaugesLib"
                     xmlns:xc="http://schemas.xceed.com/wpf/xaml/toolkit">
-  <cv:Int2BrushConverter x:Key="Int2BrushConverter"/>
-  <slcv:ReverseBoolConverter x:Key="ReverseBoolConverter"/>
-  <slcv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-  <slcv:EnumToBoolConverter x:Key="EnumToBoolConverter"/>
-  <slcv:ReverseBoolToVisibilityConverter x:Key="ReverseBoolToVisibilityConverter"/>
-  <slcv:VersionStringConverter x:Key="VersionStringConverter"/>
-  <zcv:ExtractFilenameConverter x:Key="ExtractFilenameConverter"/>
-  <Style x:Key="TextBoxErrorStyle" TargetType="{x:Type TextBox}">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/ZusiMeter;component/Themes/Generic.LayoutGrid.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <cv:Int2BrushConverter x:Key="Int2BrushConverter"/>
+    <cv:BoolToOpacityConverter x:Key="BoolToOpacityConverter"/>
+    <slcv:ReverseBoolConverter x:Key="ReverseBoolConverter"/>
+    <slcv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    <slcv:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+    <slcv:EnumToBoolConverter x:Key="EnumToBoolConverter"/>
+    <slcv:ReverseBoolToVisibilityConverter x:Key="ReverseBoolToVisibilityConverter"/>
+    <slcv:VersionStringConverter x:Key="VersionStringConverter"/>
+    <zcv:ExtractFilenameConverter x:Key="ExtractFilenameConverter"/>
+    <Color x:Key="CaptionColor" A="255" R="0" G="122" B="204"/>
+    <SolidColorBrush x:Key="CaptionBrush" Color="CornflowerBlue"/>
+    <ImageBrush x:Key="NewBackgroundBrush" ImageSource="/ZusiMeter;component/Images/bkgnd.png"/>
+    <!--<Style TargetType="{x:Type xc:MessageBox}">
+        <Setter Property="xc:MessageBox.YesButtonContent" Value="Ja"/>
+        <Setter Property="xc:MessageBox.NoButtonContent" Value="Nein"/>
+        <Setter Property="xc:MessageBox.CancelButtonContent" Value="Abbrechen"/>
+    </Style>-->
+
+
+    <Style x:Key="TextBoxErrorStyle" TargetType="{x:Type TextBox}">
     <Setter Property="Validation.ErrorTemplate">
       <Setter.Value>
         <ControlTemplate>
@@ -210,5 +226,9 @@
     <Setter Property="xc:MessageBox.NoButtonContent" Value="Nein"/>
     <Setter Property="xc:MessageBox.CancelButtonContent" Value="Abbrechen"/>
   </Style>
-  <ImageBrush x:Key="NewBackgroundBrush" ImageSource="Images/bkgnd.png"/>
+    <!--<ImageBrush x:Key="NewBackgroundBrush" ImageSource="Images/bkgnd.png">
+        <ImageBrush.Opacity>
+            <Binding Path="SelectLayout" Converter="{StaticResource BoolToOpacityConverter}" />
+        </ImageBrush.Opacity>
+    </ImageBrush>-->
 </ResourceDictionary>

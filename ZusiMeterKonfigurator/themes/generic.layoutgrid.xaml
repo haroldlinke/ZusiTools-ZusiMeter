@@ -1,8 +1,0 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:ZusiMeterKonfigurator.Controls">
-  <Style TargetType="{x:Type local:LayoutGrid}">
-    <Setter Property="Panel.Background"
-            Value="{Binding LayoutBackground.Background, RelativeSource={RelativeSource Self}, Mode=OneWay}"/>
-  </Style>
-</ResourceDictionary>

@@ -17,21 +17,24 @@
     <Compile Remove="AsmInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="help\ZusiMeter_Docu_Deutsch.docx" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Resources\zusimeter.ico" />
   </ItemGroup>
    <ItemGroup>
     <PackageReference Include="Sovoma" Version="6.2.1" />
     <PackageReference Include="Sovoma.WPF" Version="6.7.3" />
     <PackageReference Include="System.IO" Version="4.3.0" />
-    <PackageReference Include="ZusiMeterGaugesLib" Version="6.3.11" />
+    <PackageReference Include="ZusiMeterGaugesLib" Version="6.3.12" />
     <PackageReference Include="Zusisuplib" Version="1.0.6" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2792.45" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ZusiMeter">
       <HintPath>ZusiMeter.dll</HintPath>
     </Reference>
   </ItemGroup>
-
   <ItemGroup>
     <Resource Include="images\bkgnd.png" />
     <Resource Include="images\graphic.jpg" />
@@ -41,6 +44,7 @@
     <Resource Include="images\window_bkgnd_blue.png" />
     <Resource Include="themes\images\bkgnd.png" />
     <Resource Include="Resources\zusimeter.ico" />
+    <Resource Include="help\ZusiMeter_Docu_Deutsch.pdf" />
     <Resource Include="zusimeter.xsd" />
     <Resource Include="GaugePool.xml" />
     <Resource Include="History.cs" />

@@ -4,84 +4,69 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ZusiMeter"
+        xmlns:pg="clr-namespace:ZusiMeter.Pages"
+        xmlns:data="clr-namespace:ZusiMeter.Data"
+        xmlns:cv="clr-namespace:ZusiMeter.Converter"
         xmlns:c="clr-namespace:ZusiMeterGaugesLib.Controls;assembly=ZusiMeterGaugesLib"
         xmlns:sl="clr-namespace:Sovoma;assembly=Sovoma"
         xmlns:v="clr-namespace:ZusiMeter.ValidationRules"
         x:Name="mainWindow" SnapsToDevicePixels="true" UseLayoutRounding="true"
-        SizeToContent="WidthAndHeight" ResizeMode="CanMinimize" WindowStyle="ToolWindow"
+        SizeToContent="WidthAndHeight" ResizeMode="CanResize" WindowStyle="ThreeDBorderWindow"
         Background="{DynamicResource NewBackgroundBrush}" Icon="Resources\zusimeter.ico"
         Title="{Binding Source={x:Static sl:AsmInfo.Product}}"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+        DataContext="{Binding Source={x:Static data:DataManager.Instance}}"
+        >
+    <!--DataContext="{Binding RelativeSource={RelativeSource Self}}"-->
   <FrameworkElement.Resources>
-    <ResourceDictionary/>
-  </FrameworkElement.Resources>
+        <ResourceDictionary/>
+    </FrameworkElement.Resources>
   <Grid>
-  
-    <Popup Width="206" PopupAnimation="Slide" AllowsTransparency="true"
-           PlacementTarget="{Binding ElementName=mainPanel}"
-           IsOpen="{Binding IsChecked, ElementName=cbxIPBoard, Mode=OneWay}">
-      <Border BorderThickness="1,0,1,1" CornerRadius="0,0,6,6" BorderBrush="Black" Background="AliceBlue"
-              Padding="3">
-        <Grid>
-          <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-          </Grid.RowDefinitions>
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition/>
-          </Grid.ColumnDefinitions>
-          <Label Content="IP/Hostname:" HorizontalAlignment="Right" Grid.Row="0"/>
-          <TextBox x:Name="tbxHost" Grid.Column="1" VerticalAlignment="Center"
-                   Style="{StaticResource TextBoxErrorStyle}" Grid.Row="0" Padding="3">
-            <Binding Path="Host" ElementName="mainWindow" UpdateSourceTrigger="Default">
-              
-                <Binding.ValidationRules>
-                <v:ValidateHostOrIP/>
-              </Binding.ValidationRules>
-                
-            </Binding>
-              
-          </TextBox>
-          <Label Grid.Row="1" Content="Port:" HorizontalAlignment="Right"/>
-          <TextBox x:Name="tbxPort" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"
-                   Style="{StaticResource TextBoxErrorStyle}" Padding="3">
-            <Binding Path="Port" ElementName="mainWindow" UpdateSourceTrigger="PropertyChanged">
-              
-                <Binding.ValidationRules>
-                <v:ValidatePort/>
-              </Binding.ValidationRules>
-                
-            </Binding>
-          </TextBox>
-        </Grid>
-      </Border>
-    </Popup>
-    <Popup MouseEnter="ZusiMelderConf_MouseEnter" MouseLeave="ZusiMelderConf_MouseLeave"
-           PopupAnimation="Slide" AllowsTransparency="true" PlacementTarget="{Binding ElementName=mainPanel}"
-           IsOpen="{Binding IsZusiMelderConfVisible}">
-      <Border BorderBrush="Black" BorderThickness="1,0,1,1" Background="AliceBlue" CornerRadius="0,0,6,6"
-              Padding="6">
-        <Grid>
-          <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-          </Grid.RowDefinitions>
-          <RadioButton Content="Zusi läuft auf demselben Computer" GroupName="rbgZusiConn" Margin="0,0,0,3"
-                       IsChecked="{Binding ZusiConfiguration, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=LocalHost}"/>
-          <RadioButton Grid.Row="1" Content="Zusi•Melder verwenden" GroupName="rbgZusiConn" Margin="0,3"
-                       IsChecked="{Binding ZusiConfiguration, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=AutoDetect}"/>
-          <RadioButton Grid.Row="2" Content="Zusi-Verbindung manuell konfigurieren" GroupName="rbgZusiConn"
-                       Margin="0,3,0,0"
-                       IsChecked="{Binding ZusiConfiguration, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Manual}"/>
-        </Grid>
-      </Border>
-    </Popup>
+     
     <DockPanel x:Name="mainPanel">
-      <StatusBar MouseRightButtonDown="StatusBar_MouseRightButtonDown" DockPanel.Dock="Bottom">
-        <StatusBarItem>
-          <CheckBox Checked="CbxIPBoard_Checked" x:Name="cbxIPBoard" ToolTip="Zusi-Verbindung"
+            <Menu VerticalAlignment="Top" Grid.ColumnSpan="2" DockPanel.Dock="Top" Padding="0,3">
+                <Control.Background>
+                    <LinearGradientBrush>
+                        <GradientStop Offset="0" Color="#FF76A8FF"/>
+                        <GradientStop Offset="1" Color="#FF6A9BF3"/>
+                    </LinearGradientBrush>
+                </Control.Background>
+                <MenuItem Header="_Datei">
+                    <MenuItem Command="{x:Static local:MainWindow.CommandNewGraphicLayout}"/>
+                    <MenuItem Command="{x:Static local:MainWindow.CommandNewTextLayout}"/>
+                    <Separator/>
+                    <MenuItem Command="{x:Static local:MainWindow.CommandLoadLayout}"/>
+                    <MenuItem Command="{x:Static local:MainWindow.CommandLoadLayoutEdit}"/>
+                    <MenuItem Command="{x:Static pg:EditorPage.CommandSaveLayout}"
+                                CommandTarget="{Binding ElementName=editorPage}"/>
+                    <MenuItem Command="{x:Static pg:EditorPage.CommandSaveAsLayout}"
+                                CommandTarget="{Binding ElementName=editorPage}"/>
+                    <Separator/>
+                    <MenuItem Command="{x:Static local:MainWindow.CommandOpenLayout}"/>
+                    <MenuItem Command="{x:Static local:MainWindow.CommandLoadOtherLayout}"/>
+                    <Separator/>
+                    <MenuItem Command="{x:Static local:MainWindow.CommandBack}"/>
+                    <Separator/>
+                    <MenuItem Command="{x:Static local:MainWindow.CommandQuit}"/>
+                </MenuItem>
+                <MenuItem Header="_Bearbeiten" Visibility="{Binding Visibility, ElementName=editorPage}">
+                    <!--<MenuItem Command="{x:Static pg:EditorPage.CommandUndo}" CommandTarget="{Binding ElementName=editorPage}"/>
+                    <Separator/>-->
+                    <MenuItem Command="{x:Static pg:EditorPage.CommandRemoveGauge}"
+                              CommandTarget="{Binding ElementName=editorPage}"/>
+                    <!--<Separator/>
+                    <MenuItem Header="_Eigenschaften" IsEnabled="false"/>-->
+                </MenuItem>
+                <MenuItem Header="_Einstellungen">
+                    <MenuItem Command="{x:Static local:MainWindow.CommandOptions}" CommandTarget="{Binding ElementName=window}"/>
+                </MenuItem>
+                <MenuItem Header="_Info">
+                    <MenuItem Command="{x:Static local:MainWindow.CommandAbout}" CommandTarget="{Binding ElementName=window}"/>
+                    <MenuItem Command="{x:Static local:MainWindow.CommandHelp}" CommandTarget="{Binding ElementName=window}"/>
+                </MenuItem>
+            </Menu>
+            <StatusBar MouseRightButtonDown="StatusBar_MouseRightButtonDown" DockPanel.Dock="Bottom">
+        <!--<StatusBarItem>
+          --><!--<CheckBox Checked="CbxIPBoard_Checked" x:Name="cbxIPBoard" ToolTip="Zusi-Verbindung"
                     Visibility="{Binding IsIPBoardSwitchVisible, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter={x:Static Visibility.Collapsed}}">
             <FrameworkElement.Style>
               <Style TargetType="{x:Type CheckBox}">
@@ -103,8 +88,8 @@
                 </Setter>
               </Style>
             </FrameworkElement.Style>
-          </CheckBox>
-        </StatusBarItem>
+          </CheckBox>--><!--
+        </StatusBarItem>-->
         <StatusBarItem>
           <StackPanel Orientation="Horizontal"
                       Visibility="{Binding SelectLayout, Converter={StaticResource ReverseBoolToVisibilityConverter}, ConverterParameter={x:Static Visibility.Collapsed}}">
@@ -118,29 +103,28 @@
                     Style="{DynamicResource PauseButtonStyle}" Command="{x:Static local:MainWindow.CommandPause}"/>
             <Button Width="12" Height="12" Margin="6,0,0,0" BorderThickness="0" ToolTip="Zeitsprung"
                     Style="{DynamicResource TimejumpButtonStyle}" Command="{x:Static local:MainWindow.CommandTimejump}"/>
-            <Button Width="12" Height="12" Margin="12,0,0,0" BorderThickness="0" ToolTip="Layout-Auswahl"
+            <!--<Button Width="12" Height="12" Margin="12,0,0,0" BorderThickness="0" ToolTip="Layout-Auswahl"
                     Style="{DynamicResource BackButtonStyle}" Command="{x:Static local:MainWindow.CommandBack}"/>
             <Button Width="12" Height="12" Margin="12,0,0,0" BorderThickness="0" ToolTip="Zu ZUSI AutoStart hinzufügen"
-                    Style="{DynamicResource SendToAutoStartButtonStyle}" Command="{x:Static local:MainWindow.CommandSendToAutoStart}"/>
+                    Style="{DynamicResource SendToAutoStartButtonStyle}" Command="{x:Static local:MainWindow.CommandSendToAutoStart}"/>-->
                     </StackPanel>
         </StatusBarItem>
         <StatusBarItem HorizontalAlignment="Right">
           <StackPanel Orientation="Horizontal">
             <TextBlock Text="Die Zusi-Verbindung ist nicht konfiguriert!" Foreground="#FFDA0000"
-                       Visibility="{Binding MissingConfiguration, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                       Visibility="{Binding MissingConfiguration, Converter={StaticResource BoolToVisibilityConverter}, ElementName=mainWindow}"/>
             <TextBlock Text=" " Margin="0,0,6,0" VerticalAlignment="Center"/>
 
             <Ellipse Width="12" Height="12" Stroke="Black" Margin="0,0,3,0" x:Name="IPStatus"
                      Fill="{Binding ZusiConnectionState, Converter={StaticResource Int2BrushConverter}, ElementName=mainWindow, Mode=OneWay}"         
                      ToolTip="{Binding ZusiConnectionString, ElementName=mainWindow, Mode=OneWay}">
-                <!-- **HLI
-                     <Ellipse.InputBindings>
-                              <MouseBinding Gesture="LeftClick" Command="{x:Static local:MainWindow.CommandOpenIPConnConf}" />
-                      </Ellipse.InputBindings>
-                -->
-            </Ellipse>
-
-                    </StackPanel>
+                     <Ellipse.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Verbindung einstellen" Command="{x:Static local:MainWindow.CommandOptions}" CommandTarget="{Binding ElementName=window}"/>
+                         </ContextMenu>
+                      </Ellipse.ContextMenu>
+             </Ellipse>
+           </StackPanel>
         </StatusBarItem>
       </StatusBar>
       <Border>
@@ -153,7 +137,7 @@
                               ScaleY="{Binding Zoom, ElementName=mainWindow, Mode=OneWay}"/>
             </FrameworkElement.LayoutTransform>
           </Grid>
-          <Border MinWidth="200" MinHeight="100"
+          <!--<Border MinWidth="200" MinHeight="100"
                   Visibility="{Binding SelectLayout, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter={x:Static Visibility.Collapsed}}">
             <Grid>
               <Grid.RowDefinitions>
@@ -191,7 +175,7 @@
                   <c:LayoutPreview x:Name="preview"/>
                 </Viewbox>
               </Border>
-              <Border Padding="6,0,6,3" Grid.Row="2" Grid.ColumnSpan="2">
+              <Border Padding="6,0,6,3" Grid.Row="2" Grid.ColumnSpan="2" Visibility="Collapsed" >
                 <Grid Height="270">
                   <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -219,13 +203,19 @@
                     <ItemsControl.ItemTemplate>
                       <DataTemplate>
                         <StackPanel Margin="3,0,0,0" Width="64" ToolTip="{Binding Converter={StaticResource ExtractFilenameConverter}}">
+                          <StackPanel.ContextMenu>
+                            <ContextMenu>
+                             <MenuItem Header="Layout laden" Command="{x:Static local:MainWindow.CommandLoadLayout}"/>
+                             <MenuItem Header="Layout zu ZUSI-Autostart hinzufügen" Command="{x:Static local:MainWindow.CommandSendToAutoStart}"/>
+                            </ContextMenu>
+                          </StackPanel.ContextMenu>
                           <Image Source="Images/listviewitem.png" Margin="0,0,0,3"
-                                 HorizontalAlignment="Center" Stretch="None"/>
+                            HorizontalAlignment="Center" Stretch="None"/>
                           <TextBlock HorizontalAlignment="Center" TextTrimming="CharacterEllipsis"
-                                     Text="{Binding Converter={StaticResource ExtractFilenameConverter}}"/>
-                        </StackPanel>
-                      </DataTemplate>
-                    </ItemsControl.ItemTemplate>
+                                Text="{Binding Converter={StaticResource ExtractFilenameConverter}}"/>
+                      </StackPanel>
+                    </DataTemplate>
+                   </ItemsControl.ItemTemplate>
                   </ListView>
                   <Button Command="{x:Static local:MainWindow.CommandLoadLayout}" Grid.Row="3" Margin="0,3,0,4"
                           Grid.Column="1" HorizontalAlignment="Right" IsDefault="true"
@@ -236,9 +226,13 @@
                 </Grid>
               </Border>
             </Grid>
-          </Border>
+          </Border>-->
         </Grid>
       </Border>
-    </DockPanel>
+            <Grid>
+                <pg:StartPage x:Name="startPage" Visibility="{Binding SelectLayout, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter={x:Static Visibility.Collapsed}}"/>
+                <pg:EditorPage x:Name="editorPage" Visibility="Collapsed"/>
+            </Grid>
+        </DockPanel>
   </Grid>
 </Window>

@@ -15,7 +15,7 @@ using System.Windows;
 [assembly: AssemblyProduct("Zusi•Meter 2024")]
 [assembly: AssemblyCopyright("Copyright © 2018-2024 Holger Maaß, Harold Linke")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("6.4.0")]
+[assembly: AssemblyVersion("6.5.1")]
 
 
 

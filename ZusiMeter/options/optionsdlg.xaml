@@ -1,0 +1,87 @@
+﻿<Window x:Class="ZusiMeter.Options.OptionsDlg"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ZusiMeter.Options"
+        xmlns:m="clr-namespace:ZusiMeter"
+        xmlns:v="clr-namespace:ZusiMeter.ValidationRules"
+        xmlns:swc="clr-namespace:Sovoma.WPF.Converter;assembly=Sovoma.WPF"
+        xmlns:cm="clr-namespace:ZusiMeterGaugesLib.Common;assembly=ZusiMeterGaugesLib"
+        Title="ZusiMeter Options" Height="250" Width="400" UseLayoutRounding="true" SnapsToDevicePixels="true"
+        ResizeMode="NoResize" ShowInTaskbar="false"
+        WindowStartupLocation="CenterOwner" WindowStyle="ToolWindow"
+        Background="{x:Null}">
+
+    <Border Padding="12,0,12,6" CornerRadius="6" BorderThickness="6,2"
+          Background="{DynamicResource {x:Static cm:GaugeColors.TileBrushKey}}">
+        <Border.BorderBrush>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="{DynamicResource CaptionColor}" Offset="0"/>
+                <GradientStop Color="#FF0099FF" Offset="0.5"/>
+                <GradientStop Color="{DynamicResource CaptionColor}" Offset="1"/>
+            </LinearGradientBrush>
+        </Border.BorderBrush>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="25"/>
+            </Grid.RowDefinitions>
+            <TabControl>
+                <TabItem Header="Verbindungen">
+                    <Grid Background="#FFE5E5E5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Row="1" Content="Verbindungstyp:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <RadioButton Content="Zusi läuft auf demselben Computer" GroupName="rbgZusiConn" Margin="10,3,10,3" VerticalAlignment="Center"
+                           IsChecked="{Binding ZusiConfiguration, Converter={StaticResource EnumToBoolConverter }, ConverterParameter=LocalHost}" Grid.Column="2"/>
+                        <RadioButton Grid.Row="1" Content="Zusi•Melder verwenden" GroupName="rbgZusiConn" Margin="10,3,10,3" VerticalAlignment="Center"
+                           IsChecked="{Binding ZusiConfiguration, Converter={StaticResource EnumToBoolConverter }, ConverterParameter=AutoDetect}" Grid.Column="2"/>
+                        <RadioButton Grid.Row="2" Content="Zusi-Verbindung manuell konfigurieren" GroupName="rbgZusiConn" Margin="10,3,10,3" VerticalAlignment="Center"
+                           IsChecked="{Binding ZusiConfiguration, Converter={StaticResource EnumToBoolConverter }, ConverterParameter=Manual}" Grid.Column="2"/>
+                        <Label Content="IP/Hostname:" HorizontalAlignment="Right" Grid.Row="4"/>
+                        <TextBox x:Name="tbxHost" Grid.Column="1" VerticalAlignment="Center"
+                    Style="{StaticResource TextBoxErrorStyle}" Grid.Row="4" Padding="3">
+                            <Binding Path="Host" UpdateSourceTrigger="Default">
+                                <Binding.ValidationRules>
+                                    <v:ValidateHostOrIP/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox>
+                        <Label Grid.Row="5" Content="Port:" HorizontalAlignment="Right"/>
+                        <TextBox x:Name="Port" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center"
+                            Style="{StaticResource TextBoxErrorStyle}" Padding="3" >
+                            <Binding Path="Port" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <v:ValidatePort/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox>
+                     </Grid>
+                </TabItem>
+                <TabItem Header="weitere Optionen">
+                    <Grid Background="#FFE5E5E5">
+                        <Label Content="in Arbeit ..." HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+
+            <Button Command="{x:Static local:OptionsDlg.CommandClose}" HorizontalAlignment="Left"
+               VerticalAlignment="Center" Style="{DynamicResource DialogButtonStyle}" IsDefault="true"
+               Margin="1,0,0,0" Content="{Binding Command.Text, RelativeSource={RelativeSource Self}}" Grid.Row="1"/>
+            <Button Command="{x:Static local:OptionsDlg.CommandCheckConnection}" HorizontalAlignment="Center"
+                VerticalAlignment="Center" Style="{DynamicResource DialogButtonStyle}" IsDefault="true"
+                Margin="1,0,0,0" Content="{Binding Command.Text, RelativeSource={RelativeSource Self}}" Grid.Row="1"/>
+        </Grid>
+    </Border>
+</Window>

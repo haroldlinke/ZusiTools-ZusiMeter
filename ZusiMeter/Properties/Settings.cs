@@ -8,6 +8,7 @@ using System.CodeDom.Compiler;
 using System.Configuration;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using ZusiMeterGaugesLib.Common;
 
 #nullable disable
 namespace ZusiMeter.Properties
@@ -20,6 +21,31 @@ namespace ZusiMeter.Properties
 
     public static Settings Default => Settings.defaultInstance;
 
+
+    [UserScopedSetting]
+    [DebuggerNonUserCode]
+    [DefaultSettingValue("False")]
+    public bool AutoUpdate
+    {
+      get => (bool) this[nameof (AutoUpdate)];
+      set => this[nameof (AutoUpdate)] = (object) value;
+    }
+
+    [UserScopedSetting]
+    [DebuggerNonUserCode]
+    public BackgroundSetting DefaultDialBackground
+    {
+      get => (BackgroundSetting) this[nameof (DefaultDialBackground)];
+      set => this[nameof (DefaultDialBackground)] = (object) value;
+    }
+
+    [UserScopedSetting]
+    [DebuggerNonUserCode]
+    public BackgroundSetting DefaultTextBackground
+    {
+      get => (BackgroundSetting) this[nameof (DefaultTextBackground)];
+      set => this[nameof (DefaultTextBackground)] = (object) value;
+    }
     [UserScopedSetting]
     [DebuggerNonUserCode]
     [DefaultSettingValue("")]
@@ -46,6 +72,8 @@ namespace ZusiMeter.Properties
       get => (double) this[nameof (RailRunnerVolume)];
       set => this[nameof (RailRunnerVolume)] = (object) value;
     }
+	
+	
 
     [UserScopedSetting]
     [DebuggerNonUserCode]

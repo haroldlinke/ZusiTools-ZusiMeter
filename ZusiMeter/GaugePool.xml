@@ -360,7 +360,8 @@
 		<Component type="ComponentSifa" displayName="Sifa" sizeY="2"/>
 		<Component type="ComponentStromabnehmer" displayName="Stromabnehmer"/>
 		<Component type="ComponentZugbeeinflussungA" displayName="Zugbeeinflussung (Indusi/PZB)" sizeY="2"/>
-		<Component type="ComponentFahrsperre" displayName="Zugbeeinflussung (Fahrsperre)" sizeY="2"/>
+    <Component type="ComponentZugbeeinflussungPZB_LZB" displayName="Zugbeeinflussung (PZB/LZB)" sizeY="2"/>
+    <Component type="ComponentFahrsperre" displayName="Zugbeeinflussung (Fahrsperre)" sizeY="2"/>
 		<Component type="ComponentLZB" displayName="Zugbeeinflussung (LZB)" sizeY="2"/>
 	</Components>
 
@@ -504,6 +505,7 @@
 		<Component type="ComponentSifa" displayName="Sifa" sizeX="2" sizeY="2" style="ComponentSifaText"/>
 		<Component type="ComponentStromabnehmer" displayName="Stromabnehmer" sizeX="2" style="ComponentStromabnehmerText"/>
 		<Component type="ComponentZugbeeinflussungA" displayName="Zugbeeinflussung (Indusi/PZB)" sizeX="2" sizeY="3" style="ComponentZugbeeinflussungText"/>
+    <Component type="ComponentZugbeeinflussungPZB_LZB" displayName="Zugbeeinflussung (PZB/LZB)" sizeX="2" sizeY="3" style="ComponentZugbeeinflussungPZB_LZBText"/>
 		<Component type="ComponentFahrsperre" displayName="Zugbeeinflussung (Fahrsperre)" sizeX="2" sizeY="3" style="ComponentFahrsperreText"/>
 		<Component type="ComponentLZB" displayName="Zugbeeinflussung (LZB)" sizeX="2" sizeY="3" style="ComponentLZBText"/>
 	</TextComponents>

@@ -26,19 +26,27 @@ using System.Windows.Markup;
 using System.Windows.Threading;
 using System.Xml.Linq;
 using ZusiFahrpultLib;
+//using ZusiKlassenLib;
 using ZusiMeter.Miscellaneous;
 using ZusiMeter.Properties;
+using ZusiMeter.About;
+using ZusiMeter.Options;
 using ZusiMeterGaugesLib.Common;
 using ZusiMeterGaugesLib.Components;
 using ZusiMeterGaugesLib.Controls;
+using ZusiMeterGaugesLib.Editors;
 using ZusiMeterGaugesLib.DigitalGauges;
 using ZusiMeterGaugesLib.GaugeTemplates;
 using ZusiMeterGaugesLib.Interfaces;
 using ZusiMeterGaugesLib.Managers;
 using ZusiMeterGaugesLib.TheRailRunner;
 using ZusiMeterGaugesLib.Utils;
+using ZusiMeter.Data;
+using ZusiMeter.Pages;
+using ZusiMeter.Properties;
 using Zusisuplib;
 using System.Windows.Interop;
+using System.Net.Sockets;
 
 namespace ZusiMeter
 {
@@ -80,13 +88,29 @@ namespace ZusiMeter
     public static readonly DependencyProperty SelectLayoutProperty = MainWindow._selectLayoutKey.DependencyProperty;
     private static readonly DependencyPropertyKey _zoomKey = DependencyProperty.RegisterReadOnly(nameof (Zoom), typeof (double), typeof (MainWindow), new PropertyMetadata((object) 1.0));
     public static readonly DependencyProperty ZoomProperty = MainWindow._zoomKey.DependencyProperty;
-    public static readonly DependencyProperty ZusiConfigurationProperty = DependencyProperty.Register(nameof (ZusiConfiguration), typeof (ZusiConfigurationMode), typeof (MainWindow), new PropertyMetadata((object) (ZusiConfigurationMode) Settings.Default.ZusiConfiguration, new PropertyChangedCallback(MainWindow.OnZusiConfigurationChanged)));
+    public static readonly DependencyProperty ZusiConfigurationProperty = DependencyProperty.Register(nameof (ZusiConfiguration), typeof (ZusiConfigurationMode), typeof (MainWindow), new PropertyMetadata((object) (ZusiConfigurationMode) Settings.Default.ZusiConfiguration, new PropertyChangedCallback(OnZusiConfigurationChanged)));
     private static readonly DependencyPropertyKey _keyZusiConnectionState = DependencyProperty.RegisterReadOnly(nameof (ZusiConnectionState), typeof (int), typeof (MainWindow), new PropertyMetadata((object) 0, (PropertyChangedCallback) ((d, e) => CommandManager.InvalidateRequerySuggested())));
     public static readonly DependencyProperty ZusiConnectionStateProperty = MainWindow._keyZusiConnectionState.DependencyProperty;
     private static readonly DependencyPropertyKey _keyZusiConnectionString = DependencyProperty.RegisterReadOnly(nameof (ZusiConnectionString), typeof (string), typeof (MainWindow), new PropertyMetadata((PropertyChangedCallback) null));
+    
     public static readonly DependencyProperty ZusiConnectionStringProperty = MainWindow._keyZusiConnectionString.DependencyProperty;
-    public static readonly RoutedUICommand CommandLoadLayout = new RoutedUICommand("_Layout laden", nameof (CommandLoadLayout), typeof (MainWindow));
-    public static readonly RoutedUICommand CommandLoadOtherLayout = new RoutedUICommand("_Anderes Layout laden", nameof (CommandLoadOtherLayout), typeof (MainWindow), CommandKey.F(Key.F2));
+    public static readonly RoutedUICommand CommandLoadLayout = new RoutedUICommand("Aktuelles _Layout anzeigen", nameof (CommandLoadLayout), typeof (MainWindow));
+    public static readonly RoutedUICommand CommandLoadOtherLayout = new RoutedUICommand("_Anderes Layout anzeigen", nameof (CommandLoadOtherLayout), typeof (MainWindow), CommandKey.F(Key.F2));
+    public static readonly RoutedUICommand CommandQuit = new RoutedUICommand("_Beenden", nameof(CommandQuit), typeof(MainWindow), CommandKey.Alt_F(Key.F4));
+    public static readonly RoutedUICommand CommandAbout = new RoutedUICommand("Über _ZusiMeter", nameof(CommandAbout), typeof(MainWindow));
+    public static readonly RoutedUICommand CommandHelp = new RoutedUICommand("_Dokumentation", nameof(CommandHelp), typeof(MainWindow));
+    public static readonly RoutedUICommand CommandOptions = new RoutedUICommand("Options", nameof(CommandOptions), typeof(MainWindow));
+    public static readonly RoutedUICommand CommandWillNewLayout = new RoutedUICommand("_zur Layoutauswahl", nameof(CommandWillNewLayout), typeof(MainWindow), new InputGestureCollection((IList)new InputGesture[1]
+        {
+        (InputGesture) new KeyGesture(Key.N, ModifierKeys.Control)
+        }));
+    public static readonly RoutedUICommand CommandNewGraphicLayout = new RoutedUICommand("Neues _Grafiklayout anlegen", nameof(CommandNewGraphicLayout), typeof(MainWindow));
+    public static readonly RoutedUICommand CommandNewTextLayout = new RoutedUICommand("Neues _Textlayout anlegen", nameof(CommandNewTextLayout), typeof(MainWindow));
+    public static readonly RoutedUICommand CommandOpenLayout = new RoutedUICommand("Anderes Layout bearbeiten", nameof(CommandOpenLayout), typeof(MainWindow), new InputGestureCollection((IList)new InputGesture[1]
+        {
+    (InputGesture) new KeyGesture(Key.O, ModifierKeys.Control)
+        }));
+    public static readonly RoutedUICommand CommandLoadLayoutEdit = new RoutedUICommand("Aktuelles Layout _bearbeiten", nameof(CommandLoadLayoutEdit), typeof(MainWindow));
     public static readonly RoutedUICommand CommandAppHelper = new RoutedUICommand("_", nameof (CommandAppHelper), typeof (MainWindow), new InputGestureCollection((IList) new InputGesture[1]
     {
       (InputGesture) new KeyGesture(Key.Z, ModifierKeys.Control | ModifierKeys.Shift)
@@ -94,11 +118,11 @@ namespace ZusiMeter
     public static readonly RoutedUICommand CommandPause = new RoutedUICommand("", nameof (CommandPause), typeof (MainWindow));
     public static readonly RoutedUICommand CommandTimejump = new RoutedUICommand("", nameof (CommandTimejump), typeof (MainWindow));
     public static readonly RoutedUICommand CommandTimelapse = new RoutedUICommand("", nameof (CommandTimelapse), typeof (MainWindow));
-    public static readonly RoutedUICommand CommandBack = new RoutedUICommand("", nameof (CommandBack), typeof (MainWindow));
+    public static readonly RoutedUICommand CommandBack = new RoutedUICommand("Zurück zur Layoutauswahl", nameof (CommandBack), typeof (MainWindow));
     public static readonly RoutedUICommand CommandExitApp = new RoutedUICommand("", nameof (CommandExitApp), typeof (MainWindow), CommandKey.Alt_F(Key.F4));
     public static readonly RoutedUICommand CommandMinimizeApp = new RoutedUICommand("", nameof (CommandMinimizeApp), typeof (MainWindow));
-    public static readonly RoutedUICommand CommandSendToAutoStart = new RoutedUICommand("", nameof(CommandSendToAutoStart), typeof(MainWindow));
-    public static readonly RoutedUICommand CommandOpenIPConnConf = new RoutedUICommand("", nameof(CommandOpenIPConnConf), typeof(MainWindow));
+    public static readonly RoutedUICommand CommandSendToAutoStart = new RoutedUICommand("Layout zu ZUSI-Autostart hinzufügen", nameof(CommandSendToAutoStart), typeof(MainWindow));
+    public static readonly RoutedUICommand CommandOpenIPConnConf = new RoutedUICommand("TCP/IP Verbindung einstellen", nameof(CommandOpenIPConnConf), typeof(MainWindow));
         public bool CanActivate
     {
       get => (bool) this.GetValue(MainWindow.CanActivateProperty);
@@ -169,30 +193,58 @@ namespace ZusiMeter
 
     public LayoutBackground LayoutBackground => this._background;
 
-    private static string GetZusiMeterLayoutFileDir()
+    public static string GetZusiMeterLayoutFileDir()
+    {
+        if (_currentlayoutfolder == null)
         {
-            if (_currentlayoutfolder == null)
-            {
-                string folderpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "ZusiMeterLayouts");
+            string folderpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "ZusiMeterLayouts");
 
+            if (!Directory.Exists(folderpath))
+            {
+                string zusifolderpath = Zusi.DataPath[2]; // public data zusi folder
+                folderpath = Path.Combine(zusifolderpath, "_Tools\\ZusiMeter\\ZusiMeterLayouts");
+                //folderpath = Path.Combine(Zusiaccess.GetZUSIUserfiledir(folderpath), "ZusiMeterLayouts");
                 if (!Directory.Exists(folderpath))
                 {
-                    string zusifolderpath = Zusi.DataPath[2]; // public data zusi folder
-                    folderpath = Path.Combine(zusifolderpath, "_Tools\\ZusiMeter\\ZusiMeterLayouts");
-                    //folderpath = Path.Combine(Zusiaccess.GetZUSIUserfiledir(folderpath), "ZusiMeterLayouts");
-                    if (!Directory.Exists(folderpath))
-                    {
-                        Directory.CreateDirectory(folderpath);
+                    Directory.CreateDirectory(folderpath);
 
-                    }
                 }
-                _currentlayoutfolder = folderpath;
             }
- 
-            return _currentlayoutfolder;
+            _currentlayoutfolder = folderpath;
         }
+        return _currentlayoutfolder;
+    }
 
-    static MainWindow()
+    private static readonly string _defaultSavePrompt = "Soll das aktuelle Layout schnell noch gespeichert werden?";
+    private static readonly string _defaultSavePrompt2 = "Das aktuelle Layout ist leer. Soll dieses Layout gelöscht werden?";
+    //private static string? _currentlayoutfolder = null;
+
+    public event RoutedEventHandler DefaultDialBackgroundSettingsChanged
+    {
+        add
+        {
+            this.AddHandler(BrushEditor.DefaultDialBackgroundSettingsChangedEvent, (Delegate)value);
+        }
+        remove
+        {
+            this.RemoveHandler(BrushEditor.DefaultDialBackgroundSettingsChangedEvent, (Delegate)value);
+        }
+    }
+
+    public event RoutedEventHandler DefaultTextBackgroundSettingsChanged
+    {
+        add
+        {
+            this.AddHandler(BrushEditor.DefaultTextBackgroundSettingsChangedEvent, (Delegate)value);
+        }
+        remove
+        {
+            this.RemoveHandler(BrushEditor.DefaultTextBackgroundSettingsChangedEvent, (Delegate)value);
+        }
+    }
+
+
+        static MainWindow()
     {
       Window.LeftProperty.AddOwner(typeof (MainWindow), (PropertyMetadata) new FrameworkPropertyMetadata((object) double.NaN, new PropertyChangedCallback(MainWindow.OnLeftChanged)));
       Window.TopProperty.AddOwner(typeof (MainWindow), (PropertyMetadata) new FrameworkPropertyMetadata((object) double.NaN, new PropertyChangedCallback(MainWindow.OnTopChanged)));
@@ -208,12 +260,17 @@ namespace ZusiMeter
       this._background = new LayoutBackground();
       this.ObtainLayoutFiles();
       this.InitializeComponent();
+      //this.DataContext = this;
       this._initialized = true;
       this._timerZusiMelderConf.AutoReset = false;
       this._timerZusiMelderConf.Elapsed += new ElapsedEventHandler(this.TimerZusiMelderConf_Elapsed);
       this._timerGracePeriod.AutoReset = false;
       this._timerGracePeriod.Elapsed += new ElapsedEventHandler(this.TimerGracePeriod_Elapsed);
       this.Title = AppHelper.CanBringZusiToFront ? MainWindow._defaultTitle : MainWindow._defaultTitle + " (*)";
+      this.CommandBindings.Add(new CommandBinding((ICommand)MainWindow.CommandNewGraphicLayout, new ExecutedRoutedEventHandler(this.OnNewGraphicLayout)));
+      this.CommandBindings.Add(new CommandBinding((ICommand)MainWindow.CommandNewTextLayout, new ExecutedRoutedEventHandler(this.OnNewTextLayout)));
+      this.CommandBindings.Add(new CommandBinding((ICommand)MainWindow.CommandLoadLayoutEdit, new ExecutedRoutedEventHandler(this.OnLoadLayoutEdit), new CanExecuteRoutedEventHandler(this.OnCanLoadLayout)));
+      this.CommandBindings.Add(new CommandBinding((ICommand)MainWindow.CommandOpenLayout, new ExecutedRoutedEventHandler(this.OnOpenLayout)));
       this.CommandBindings.Add(new CommandBinding((ICommand) MainWindow.CommandLoadLayout, new ExecutedRoutedEventHandler(this.OnLoadLayout), new CanExecuteRoutedEventHandler(this.OnCanLoadLayout)));
       this.CommandBindings.Add(new CommandBinding((ICommand) MainWindow.CommandLoadOtherLayout, new ExecutedRoutedEventHandler(this.OnLoadOtherLayout)));
       this.CommandBindings.Add(new CommandBinding((ICommand) MainWindow.CommandAppHelper, new ExecutedRoutedEventHandler(this.OnAppHelper)));
@@ -223,10 +280,14 @@ namespace ZusiMeter
       this.CommandBindings.Add(new CommandBinding((ICommand) MainWindow.CommandBack, new ExecutedRoutedEventHandler(this.OnBack), (CanExecuteRoutedEventHandler) ((s, e) => e.CanExecute = !this.SelectLayout)));
       this.CommandBindings.Add(new CommandBinding((ICommand) MainWindow.CommandExitApp, (ExecutedRoutedEventHandler) ((s, e) => this.Close())));
       this.CommandBindings.Add(new CommandBinding((ICommand) MainWindow.CommandMinimizeApp, new ExecutedRoutedEventHandler(this.OnMinimize), new CanExecuteRoutedEventHandler(this.OnCanMinimize)));
-      this.CommandBindings.Add(new CommandBinding((ICommand) MainWindow.CommandSendToAutoStart, new ExecutedRoutedEventHandler(this.OnSendToAutoStart), (CanExecuteRoutedEventHandler)((s, e) => e.CanExecute = !this.SelectLayout)));
+      this.CommandBindings.Add(new CommandBinding((ICommand) MainWindow.CommandSendToAutoStart, new ExecutedRoutedEventHandler(this.OnSendToAutoStart), new CanExecuteRoutedEventHandler(this.OnCanLoadLayout)));
       this.CommandBindings.Add(new CommandBinding((ICommand) MainWindow.CommandOpenIPConnConf, new ExecutedRoutedEventHandler(this.OnOpenIPConnConf)));
+      this.CommandBindings.Add(new CommandBinding((ICommand)MainWindow.CommandQuit, (ExecutedRoutedEventHandler)((s, e) => this.Close())));
+      this.CommandBindings.Add(new CommandBinding((ICommand)MainWindow.CommandAbout, new ExecutedRoutedEventHandler(this.OnAbout)));
+      this.CommandBindings.Add(new CommandBinding((ICommand)MainWindow.CommandHelp, new ExecutedRoutedEventHandler(this.OnHelp)));
+      this.CommandBindings.Add(new CommandBinding((ICommand)MainWindow.CommandOptions, new ExecutedRoutedEventHandler(this.OnOptions)));
+      this.AddHandler(GaugeEventsManager.RegisterGaugeEvent, (Delegate) new RoutedEventHandler(this.MainWindow_RegisterGauge));
 
-            this.AddHandler(GaugeEventsManager.RegisterGaugeEvent, (Delegate) new RoutedEventHandler(this.MainWindow_RegisterGauge));
       this.Closing += new CancelEventHandler(this.MainWindow_Closing);
       this.Loaded += new RoutedEventHandler(this.MainWindow_Loaded);
       this._beaconReceiver.BeaconSignalReceived += new BeaconSignalReceivedEventHandler(this.BeaconReceiver_BeaconSignalReceived);
@@ -236,26 +297,27 @@ namespace ZusiMeter
 
     private void MainWindow_Closing(object sender, CancelEventArgs e)
     {
+      e.Cancel = !this.SavePropmt((string)null);
       Disposable.Dispose<BeaconReceiver>(ref this._beaconReceiver);
-      this.DisconnectFahrpult();
+      //this.DisconnectFahrpult();
       Zusiaccess.CreateZUSIMenuEntry(Bezeichnertext: "ZusiMeter", Vatermenu: "SpTBXSubmenuItemKonfiguration", MenuIndex: 17, Params: _curentlayoutfile);
-        }
+    }
 
     private void MainWindow_Loaded(object sender, RoutedEventArgs e)
     {
       this.DataProcessor();
       string[] commandLineArgs = Environment.GetCommandLineArgs();
+      BackgroundSettings.ApplyUserSettings(Settings.Default.DefaultDialBackground, Settings.Default.DefaultTextBackground);
+    //string message = "";
 
-      //string message = "";
+    //for (int i = 0; i < commandLineArgs.Length; i++)
+    //      {
+    //          message = message + commandLineArgs[i] + "\n";
+    //      }
+    //if (commandLineArgs.Length > 0)
+    //          MessageBox.Show(message);
 
-      //for (int i = 0; i < commandLineArgs.Length; i++)
-      //      {
-      //          message = message + commandLineArgs[i] + "\n";
-      //      }
-      //if (commandLineArgs.Length > 0)
-      //          MessageBox.Show(message);
-
-      if (commandLineArgs.Length == 2 && System.IO.File.Exists(commandLineArgs[1]))
+    if (commandLineArgs.Length == 2 && System.IO.File.Exists(commandLineArgs[1]))
       {
         this.CheckConfiguration();
         //this.Dispatcher.BeginInvoke((Delegate) (s => this.LoadLayout(s)), DispatcherPriority.Loaded, (object) commandLineArgs[1]); **HLI
@@ -360,13 +422,11 @@ namespace ZusiMeter
       //  this.ZusiConnectionState = e.ClientAccepted ? (e.NeededDataAccepted ? 2 : 1) : 0; **HLI
       //  this.ZusiConnectionString = "Zusi-Version " + v + "/[" + i + "]"; **HLI
       //}), (object) e.ZusiVersion, (object) e.ZusiConnectionInfo); **HLI
-
-        this.Dispatcher.BeginInvoke(new Action<object, object>((v, i) => //**HLI
-        { //**HLI
-            this.ZusiConnectionState = e.ClientAccepted ? (e.NeededDataAccepted ? 2 : 1) : 0; //**HLI
-            this.ZusiConnectionString = "Zusi-Version " + v + "/[" + i + "]"; //**HLI
-        }), DispatcherPriority.Loaded, (object)e.ZusiVersion, (object)e.ZusiConnectionInfo); // **HLI
-
+      this.Dispatcher.BeginInvoke(new Action<object, object>((v, i) => //**HLI
+      { //**HLI
+        this.ZusiConnectionState = e.ClientAccepted ? (e.NeededDataAccepted ? 2 : 1) : 0; //**HLI
+        this.ZusiConnectionString = "Zusi-Version " + v + "/[" + i + "]"; //**HLI
+      }), DispatcherPriority.Loaded, (object)e.ZusiVersion, (object)e.ZusiConnectionInfo); // **HLI
     }
 
     private void Fahrpult_FtdDataReceived(object sender, FtdDataReceivedEventArgs e)
@@ -409,7 +469,7 @@ namespace ZusiMeter
       if (!this.SelectLayout || (Keyboard.Modifiers & ModifierKeys.Control) != ModifierKeys.Control)
         return;
       this._timerGracePeriod.Stop();
-      this.cbxIPBoard.IsChecked = new bool?(false);
+      //this.cbxIPBoard.IsChecked = new bool?(false);
       this.IsZusiMelderConfVisible = true;
       this._timerZusiMelderConf.Start();
     }
@@ -435,11 +495,32 @@ namespace ZusiMeter
 
     private void ZusiMelderConf_MouseLeave(object sender, MouseEventArgs e)
     {
-          this._timerZusiMelderConf.Start();
-        //if (this.ZusiConfiguration == ZusiConfigurationMode.Manual)
-        //    this.cbxIPBoard.IsChecked = true;
-        //else
-        //    this.cbxIPBoard.IsChecked = false;
+      this._timerZusiMelderConf.Start();
+      //if (this.ZusiConfiguration == ZusiConfigurationMode.Manual)
+      //    this.cbxIPBoard.IsChecked = true;
+      //else
+      //    this.cbxIPBoard.IsChecked = false;
+    }
+
+    private void OnAbout(object sender, ExecutedRoutedEventArgs e)
+    {
+      AboutDlg aboutDlg = new AboutDlg();
+      aboutDlg.Owner = (Window)this;
+      aboutDlg.ShowDialog();
+    }
+
+    private void OnHelp(object sender, ExecutedRoutedEventArgs e)
+    {
+      HelpDlg helpDlg = new HelpDlg();   
+      helpDlg.ShowDialog();
+    }
+
+
+    private void OnOptions(object sender, ExecutedRoutedEventArgs e)
+    {
+      OptionsDlg optionsDlg = new OptionsDlg(this);
+      optionsDlg.Owner = (Window)this;
+      optionsDlg.ShowDialog();
     }
 
     private static void OnHostChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -513,7 +594,7 @@ namespace ZusiMeter
       WindowPosition.Topmost = value;
     }
 
-    private static void OnZusiConfigurationChanged(
+    public static void OnZusiConfigurationChanged(
       DependencyObject d,
       DependencyPropertyChangedEventArgs e)
     {
@@ -522,7 +603,7 @@ namespace ZusiMeter
       mainWindow.OnZusiConfigurationChanged((ZusiConfigurationMode) e.NewValue);
     }
 
-    private void OnZusiConfigurationChanged(ZusiConfigurationMode value)
+    public void OnZusiConfigurationChanged(ZusiConfigurationMode value)
     {
       Settings.Default.ZusiConfiguration = (int) value;
       Settings.Default.Save();
@@ -550,24 +631,24 @@ namespace ZusiMeter
     {
       if (e.AddedItems.Count <= 0)
         return;
-      this.preview?.ShowPreview((string) e.AddedItems[0]);
+      //this.startPage.preview?.ShowPreview((string) e.AddedItems[0]); **HLI
     }
 
     private void OnCanLoadLayout(object sender, CanExecuteRoutedEventArgs e)
     {
-      e.CanExecute = this.lvLayoutFiles.SelectedItem != null && this.ZusiConnectionState == 0;
+      e.CanExecute = this.startPage.lvLayoutFiles.SelectedItem != null;
     }
 
     private void OnLoadLayout(object sender, ExecutedRoutedEventArgs e)
     {
-      this.HideIPBoard();
+      //this.HideIPBoard();
       //this.Dispatcher.BeginInvoke((Delegate) (s => this.LoadLayout(s)), DispatcherPriority.Loaded, (object) (string) this.lvLayoutFiles.SelectedItem); **HLI
-      this.Dispatcher.BeginInvoke(new Action<string>(s => this.LoadLayout(s)), DispatcherPriority.Loaded, (string)this.lvLayoutFiles.SelectedItem);
+      this.Dispatcher.BeginInvoke(new Action<string>(s => this.LoadLayout(s)), DispatcherPriority.Loaded, (string)this.startPage.lvLayoutFiles.SelectedItem);
     }
 
     private void OnLoadOtherLayout(object sender, ExecutedRoutedEventArgs e)
     {
-      this.HideIPBoard();
+      //this.HideIPBoard();
       //string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "ZusiMeterLayouts");
       string path = Path.Combine(GetZusiMeterLayoutFileDir());
       if (!Directory.Exists(path))
@@ -594,13 +675,17 @@ namespace ZusiMeter
 
     private void OnBack(object sender, ExecutedRoutedEventArgs e)
     {
+      if (!this.SavePropmt("Soll das aktuelle Layout schnell noch gespeichert werden?"))
+        return;
       this.SelectLayout = true;
+      this.startPage.Visibility = Visibility.Visible;
+      this.editorPage.Visibility = Visibility.Collapsed;
       Task.Run((Action) (() =>
       {
-        this.DisconnectFahrpult();
+        //this.DisconnectFahrpult();
         this.Dispatcher.Invoke((Action) (() => this.ClearLayout()));
       }));
-      this._willIPBoardSwitchVisible = this.IsIPBoardSwitchVisible = Settings.Default.ZusiConfiguration == 2;
+      //this._willIPBoardSwitchVisible = this.IsIPBoardSwitchVisible = Settings.Default.ZusiConfiguration == 2;
       this._trackWindow = false;
       this.Topmost = false;
     }
@@ -642,37 +727,62 @@ namespace ZusiMeter
 
     private void OnSendToAutoStart(object sender, ExecutedRoutedEventArgs e)
     {
-            string msg = "Wollen Sie dieses Layout in ZUSI AutoStart eintragen?";
+      string msg = "Wollen Sie dieses Layout in ZUSI AutoStart eintragen?";
             
-            switch (System.Windows.MessageBox.Show(msg, "Nachfrage", MessageBoxButton.YesNo))
-            {
-                case MessageBoxResult.Cancel:
-                    return;
-                case MessageBoxResult.Yes:
-                    string? executablePath = Process.GetCurrentProcess().MainModule?.FileName;
-                    Zusiaccess.CreateZUSIAutoStartEntry(executablePath,_curentlayoutfile);
+      switch (System.Windows.MessageBox.Show(msg, "Nachfrage", MessageBoxButton.YesNo))
+      {
+        case MessageBoxResult.Cancel:
+          return;
+        case MessageBoxResult.Yes:
+          string? executablePath = Process.GetCurrentProcess().MainModule?.FileName;
+          Zusiaccess.CreateZUSIAutoStartEntry(executablePath,_curentlayoutfile);
 
-                    return;
+          return;
                     
-                case MessageBoxResult.No:
-                    return;
-            }
-        }
+        case MessageBoxResult.No:
+          return;
+      }
+    }
 
     private void OnOpenIPConnConf(object sender, ExecutedRoutedEventArgs e)
     {
-        
-            this._timerGracePeriod.Stop();
-            this.cbxIPBoard.IsChecked = new bool?(false);
-            this.IsZusiMelderConfVisible = true;
-            this._timerZusiMelderConf.Start();
-
-            return;
-
-           
+      this._timerGracePeriod.Stop();
+      //this.cbxIPBoard.IsChecked = new bool?(false);
+      this.IsZusiMelderConfVisible = true;
+      this._timerZusiMelderConf.Start();
+      return;
     }
 
-        private void OnCanMinimize(object sender, CanExecuteRoutedEventArgs e)
+    public void OnCheckConnection(object sender, ExecutedRoutedEventArgs e)
+    {
+      try
+      {
+
+        this.DisconnectFahrpult();
+        this.CreateFahrpult();
+        
+        if (Settings.Default.ZusiConfiguration == 2)
+        {
+          IPHostEntry entry = Dns.GetHostEntry(string.IsNullOrEmpty(this.Host) ? "localhost" : this.Host);
+          //IEnumerable<IPAddress> ipv4s = entry.AddressList.Where(a => a.AddressFamily == AddressFamily.InterNetwork);
+          //if (ipv4s.Any())
+          //{
+
+          //}
+          //else
+          //{
+
+          //}
+        }
+        this.ConnectFahrpult();
+        this._mustReconnect = false;
+      }
+
+      catch
+      {}
+    }
+
+    private void OnCanMinimize(object sender, CanExecuteRoutedEventArgs e)
     {
       e.CanExecute = this.WindowState != WindowState.Minimized;
     }
@@ -718,13 +828,15 @@ namespace ZusiMeter
       }));
     }
 
-    private void HideIPBoard() => this.cbxIPBoard.IsChecked = new bool?(false);
+    //private void HideIPBoard() => this.cbxIPBoard.IsChecked = new bool?(false);
 
     private void LoadLayout(string layoutFileName)
     {
       this._willIPBoardSwitchVisible = this.IsIPBoardSwitchVisible = false;
-      this.DisconnectFahrpult();
+      //this.DisconnectFahrpult();
       this.SelectLayout = false;
+      this.startPage.Visibility = Visibility.Collapsed;
+      this.editorPage.Visibility = Visibility.Collapsed;
       this._curentlayoutfile = layoutFileName;
       if (!this.MissingConfiguration)
         this._beaconReceiver.ShutDown();
@@ -856,7 +968,7 @@ namespace ZusiMeter
     {
       this._fahrpult.SetNeededData(this._gaugeIds.Distinct<ZFtdID>());
       this._fahrpult.SetNeededData(this._gaugeProgIds.Distinct<ZProgID>());
-      if (Settings.Default.ZusiConfiguration == 1)
+      if (Settings.Default.ZusiConfiguration == 0)
         this._fahrpult.OpenAsync();
       else if (this.Port <= 0)
         this._fahrpult.OpenAsync(this.Host);
@@ -885,26 +997,32 @@ namespace ZusiMeter
       this._fahrpult.Disconnected -= new EventHandler(this.Fahrpult_Disconnected);
       this._fahrpult.FtdDataReceived -= new FtdDataReceivedEventHandler(this.Fahrpult_FtdDataReceived);
       this._fahrpult.ProgDataReceived -= new ProgDataReceivedEventHandler(this.Fahrpult_ProgDataReceived);
-      try
-      {
-        this._fahrpult.Dispose();
-      }
-      catch
-      {
-      }
-      finally
-      {
-        this._fahrpult = (FahrpultClient) null;
-        this.Fahrpult_Disconnected((object) null, EventArgs.Empty);
-      }
+      //try
+      //{
+      //  this._fahrpult.Dispose();
+      //}
+      //catch
+      //{
+      //}
+      //finally
+      //{
+      //  this._fahrpult = (FahrpultClient) null;
+      this.Fahrpult_Disconnected((object) null, EventArgs.Empty);
+      //}
     }
 
     private void ReconnectFahrpult()
     {
-      this.DisconnectFahrpult();
-      this.CreateFahrpult();
-      this.ConnectFahrpult();
-      this._mustReconnect = false;
+      try
+      {
+        this.DisconnectFahrpult();
+        this.CreateFahrpult();
+        this.ConnectFahrpult();
+        this._mustReconnect = false;
+      }
+      catch (Exception ex)
+      {
+      }
     }
 
     private void CheckConfiguration()
@@ -921,10 +1039,154 @@ namespace ZusiMeter
           this.MissingConfiguration = this.SelectLayout && string.IsNullOrEmpty(this.Host);
           break;
       }
-  }
+    }
+    // Konfigurator functions
+    private void MainWindow_DefaultDialBackgroundSettingsChanged(object sender, RoutedEventArgs e)
+    {
+      Settings.Default["DefaultDialBackground"] = (object)BackgroundSettings.DefaultDialBackground;
+      Settings.Default.Save();
+    }
 
-   
+    private void MainWindow_DefaultTextBackgroundSettingsChanged(object sender, RoutedEventArgs e)
+    {
+      Settings.Default["DefaultTextBackground"] = (object)BackgroundSettings.DefaultTextBackground;
+      Settings.Default.Save();
+    }
 
-    
+    private void OnWillNewLayout(object sender, ExecutedRoutedEventArgs e)
+    {
+      if (!this.SavePropmt((string)null))
+          return;
+      this.SelectLayout = true;
+      this.editorPage.Visibility = Visibility.Collapsed;
+      this.startPage.Visibility = Visibility.Visible;
+    }
+
+    private void OnNewGraphicLayout(object sender, ExecutedRoutedEventArgs e)
+    {
+      if (!this.SavePropmt("Soll das aktuelle Layout schnell noch gespeichert werden?"))
+          return;
+      this.SelectLayout = false;
+      this.startPage.Visibility = Visibility.Collapsed;
+      this.editorPage.Visibility = Visibility.Visible;
+      this.editorPage.Dispatcher.BeginInvoke(new Action(() => this.editorPage.NewLayout(false)), DispatcherPriority.Loaded);
+    }
+
+    private void OnNewTextLayout(object sender, ExecutedRoutedEventArgs e)
+    {
+      if (!this.SavePropmt("Soll das aktuelle Layout schnell noch gespeichert werden?"))
+          return;
+      this.SelectLayout = false;
+      this.startPage.Visibility = Visibility.Collapsed;
+      this.editorPage.Visibility = Visibility.Visible;
+      this.editorPage.Dispatcher.BeginInvoke(new Action(() => this.editorPage.NewLayout(true)), DispatcherPriority.Loaded);
+    }
+
+    private void OnLoadLayoutEdit(object sender, ExecutedRoutedEventArgs e)
+    {
+      if (!this.SavePropmt("Soll das aktuelle Layout schnell noch gespeichert werden?"))
+          return;
+      this.SelectLayout = false;
+      this.startPage.Visibility = Visibility.Collapsed;
+      this.editorPage.Visibility = Visibility.Visible;
+      //this.editorPage.Dispatcher.BeginInvoke((Delegate) (s => this.editorPage.LoadLayout(s)), DispatcherPriority.Loaded, (object) (string) this.startPage.lvLayoutFiles.SelectedItem);
+      this.editorPage.Dispatcher.BeginInvoke(new Action(() =>
+      {
+          this.editorPage.LoadLayout((string)this.startPage.lvLayoutFiles.SelectedItem);
+      }), DispatcherPriority.Loaded);
+    }
+
+    private void OnOpenLayout(object sender, ExecutedRoutedEventArgs e)
+    {
+      if (!this.SavePropmt((string)null))
+          return;
+      //string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "ZusiMeterLayouts");
+      string path = GetZusiMeterLayoutFileDir();
+      if (!Directory.Exists(path))
+          Directory.CreateDirectory(path);
+      OpenFileDialog openFileDialog1 = new OpenFileDialog();
+      openFileDialog1.DefaultExt = "zmlf";
+      openFileDialog1.Filter = "ZusiMeter-Layoutdateien|*.zmlf|Alle Dateien|*.*";
+      openFileDialog1.InitialDirectory = path;
+      openFileDialog1.Multiselect = false;
+      openFileDialog1.Title = "Layout öffnen";
+      OpenFileDialog openFileDialog2 = openFileDialog1;
+      bool? nullable = openFileDialog2.ShowDialog();
+      bool flag = true;
+      if (!(nullable.GetValueOrDefault() == flag & nullable.HasValue))
+          return;
+      this.SelectLayout = false;
+      this.startPage.Visibility = Visibility.Collapsed;
+      this.editorPage.Visibility = Visibility.Visible;
+      //this.editorPage.Dispatcher.BeginInvoke((Delegate) (s => this.editorPage.LoadLayout(s)), DispatcherPriority.Loaded, (object) openFileDialog2.FileName);
+      this.editorPage.Dispatcher.BeginInvoke(new Action<string>(s =>
+      {
+          this.editorPage.LoadLayout(s);
+      }), DispatcherPriority.Loaded, openFileDialog2.FileName);
+    }
+
+    private void OnCanBackToLayout(object sender, CanExecuteRoutedEventArgs e)
+    {
+      e.CanExecute = DataManager.Instance.HasLayout;
+    }
+
+    private void OnBackToLayout(object sender, ExecutedRoutedEventArgs e)
+    {
+      this.SelectLayout = true;
+      DataManager.Instance.SelectLayoutFile(DataManager.Instance.LayoutFileName);
+      this.startPage.Visibility = Visibility.Collapsed;
+      this.editorPage.Visibility = Visibility.Visible;
+    }
+
+    private bool SavePropmt(string msg)
+    {
+      if (DataManager.Instance.IsLayoutDirty)
+      {
+        if (this.editorPage.placeholder.HasGauges)
+        {
+          if (string.IsNullOrEmpty(msg))
+            msg = MainWindow._defaultSavePrompt;
+          switch (System.Windows.MessageBox.Show(msg, "Nachfrage", MessageBoxButton.YesNoCancel))
+          {
+            case MessageBoxResult.Cancel:
+              return false;
+            case MessageBoxResult.Yes:
+              if (!this.editorPage.SaveLayout())
+                return false;
+                break;
+            case MessageBoxResult.No:
+              DataManager.Instance.IsLayoutDirty = false;
+              break;
+          }
+        }
+        else
+        {
+          string layoutFileName = DataManager.Instance.LayoutFileName;
+          if (!string.IsNullOrEmpty(layoutFileName) && File.Exists(layoutFileName))
+          {
+            msg = MainWindow._defaultSavePrompt2;
+            switch (System.Windows.MessageBox.Show(msg, "Nachfrage", MessageBoxButton.YesNoCancel))
+            {
+              case MessageBoxResult.Cancel:
+                return false;
+              case MessageBoxResult.Yes:
+                try
+                {
+                  File.Delete(layoutFileName);
+                  break;
+                }
+                catch
+                {
+                  break;
+                }
+              case MessageBoxResult.No:
+                DataManager.Instance.IsLayoutDirty = false;
+                break;
+            }
+          }
+        }
+      }
+      return true;
+    }
   }
 }
