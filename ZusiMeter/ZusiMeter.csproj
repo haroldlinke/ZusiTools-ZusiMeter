@@ -17,16 +17,16 @@
     <Compile Remove="AsmInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="help\ZusiMeter_Docu_Deutsch.docx" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\zusimeter.ico" />
+    <Content Include="Resources\zusimeter.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
    <ItemGroup>
     <PackageReference Include="Sovoma" Version="6.2.1" />
     <PackageReference Include="Sovoma.WPF" Version="6.7.3" />
     <PackageReference Include="System.IO" Version="4.3.0" />
-    <PackageReference Include="ZusiMeterGaugesLib" Version="6.3.12" />
+    <PackageReference Include="ZusiFahrpultLib" Version="6.2.4.1" />
+    <PackageReference Include="ZusiMeterGaugesLib" Version="6.5.3.16" />
     <PackageReference Include="Zusisuplib" Version="1.0.6" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2792.45" />
   </ItemGroup>
@@ -36,17 +36,86 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\bkgnd.png" />
-    <Resource Include="images\graphic.jpg" />
-    <Resource Include="images\listviewitem.png" />
-    <Resource Include="images\textbased.jpg" />
-    <Resource Include="images\window_bkgnd.png" />
-    <Resource Include="images\window_bkgnd_blue.png" />
-    <Resource Include="themes\images\bkgnd.png" />
-    <Resource Include="Resources\zusimeter.ico" />
-    <Resource Include="help\ZusiMeter_Docu_Deutsch.pdf" />
-    <Resource Include="zusimeter.xsd" />
-    <Resource Include="GaugePool.xml" />
-    <Resource Include="History.cs" />
+    <Content Include="images\bkgnd.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="images\graphic.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="images\listviewitem.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="images\textbased.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="images\window_bkgnd.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="images\window_bkgnd_blue.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="themes\images\bkgnd.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\zusimeter.ico">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="help\ZusiMeter_Docu_Deutsch.pdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="zusimeter.xsd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="GaugePool.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ZusiMeterExampleLayouts\Example01.zmlf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ZusiMeterExampleLayouts\Example02.zmlf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="lib\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="themes\images\graphic.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="themes\images\listviewitem.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="themes\images\textbased.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="themes\images\window_bkgnd.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="themes\images\window_bkgnd_blue.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

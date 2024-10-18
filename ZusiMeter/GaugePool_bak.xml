@@ -1,9 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!-- file version: 1.10.0.0 -->
-<!-- 17.10.2024 - 2.0
- ComponentPZB_LZB(Text)
- ComponentPZB_LZB
--->
 <!-- 15.10.2019 - 1.9
   ComponentFahrsperre(Text)
   ComponentLZB(Text)
@@ -51,7 +47,7 @@
 			   Maximum="5" TickFrequency="1" SmallTickFrequency="0.2" Unit="Pressure" Theme="Manometer"/>
 		<Gauge displayGroup="Manometer" FtdID="DruckZeitbehaelter" Name="Zeitbehaelter"
 			   Maximum="2" TickFrequency="0.5" SmallTickFrequency="0.1" Unit="Pressure" Theme="Manometer"/>
-                <Gauge displayGroup="Manometer" FtdID="Solldruck_Hauptluftleitung" Name="Soll HLL"
+    <Gauge displayGroup="Manometer" FtdID="Solldruck_Hauptluftleitung" Name="Soll HLL"
 			   Maximum="10" TickFrequency="1" SmallTickFrequency="0.5" Unit="Pressure" Theme="Manometer"/>
 
 		<!-- **** Dynamometer **** -->
@@ -364,14 +360,13 @@
 		<Component type="ComponentSifa" displayName="Sifa" sizeY="2"/>
 		<Component type="ComponentStromabnehmer" displayName="Stromabnehmer"/>
 		<Component type="ComponentZugbeeinflussungA" displayName="Zugbeeinflussung (Indusi/PZB)" sizeY="2"/>
-		<Component type="ComponentFahrsperre" displayName="Zugbeeinflussung (Fahrsperre)" sizeY="2"/>
+    <Component type="ComponentFahrsperre" displayName="Zugbeeinflussung (Fahrsperre)" sizeY="2"/>
 		<Component type="ComponentLZB" displayName="Zugbeeinflussung (LZB)" sizeY="2"/>
-    <Component type="ComponentPZB_LZB" displayName="Zugbeeinflussung (PZB/LZB)" sizeY="2"/>
-  </Components>
+	</Components>
 
 	<TextGauges>
 		<!-- **** Accelerometer **** -->
-		<Gauge displayGroup="Accelerometer" Name="Fahren/Bremsen" FtdID="BeschleunigungX" Unit="Beschleunigung" NumDecimals="2" style="ChronometerText"/>
+		<Gauge displayGroup="Accelerometer" Name="Fahren/Bremsen" FtdID="BeschleunigungX" Unit="Beschleunigung" NumDecimals="2"/>
 		<Gauge displayGroup="Accelerometer" displayName="Seitenbeschleunigung" Name="Seitenbeschl." FtdID="BeschleunigungY" Unit="Beschleunigung" NumDecimals="2"/>
 		<Gauge displayGroup="Accelerometer" displayName="Vertikaleschleunigung" Name="Vertikalbeschl." FtdID="BeschleunigungZ" Unit="Beschleunigung" NumDecimals="2"/>
 		<Gauge displayGroup="Accelerometer" displayName="Beschleunigung X-Achse" Name="Beschl. X-Achse" FtdID="DrehBeschleunigungX" Unit="Drehbeschleunigung" NumDecimals="2"/>
@@ -509,11 +504,9 @@
 		<Component type="ComponentSifa" displayName="Sifa" sizeX="2" sizeY="2" style="ComponentSifaText"/>
 		<Component type="ComponentStromabnehmer" displayName="Stromabnehmer" sizeX="2" style="ComponentStromabnehmerText"/>
 		<Component type="ComponentZugbeeinflussungA" displayName="Zugbeeinflussung (Indusi/PZB)" sizeX="2" sizeY="3" style="ComponentZugbeeinflussungText"/>
-		<Component type="ComponentFahrsperre" displayName="Zugbeeinflussung (Fahrsperre)" sizeX="2" sizeY="3" style="ComponentFahrsperreText"/>
+    <Component type="ComponentFahrsperre" displayName="Zugbeeinflussung (Fahrsperre)" sizeX="2" sizeY="3" style="ComponentFahrsperreText"/>
 		<Component type="ComponentLZB" displayName="Zugbeeinflussung (LZB)" sizeX="2" sizeY="3" style="ComponentLZBText"/>
-    <Component type="ComponentPZB_LZB" displayName="Zugbeeinflussung (PZB/LZB)" sizeX="2" sizeY="3" style="ComponentPZB_LZBText"/>
-
-  </TextComponents>
+	</TextComponents>
 
 	<Operators>
 		<Operator displayGroup="Interaktive Geräte" displayName="Railrunner" type="RailRunner"/>

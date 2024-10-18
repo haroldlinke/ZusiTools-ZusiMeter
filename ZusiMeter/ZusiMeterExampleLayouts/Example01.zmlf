@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<ZusiMeter xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="zusimeter.xsd" version="1.3">
+  <Layout version="1.3" zoom="1">
+    <Background mode="text">
+      <Value></Value>
+    </Background>
+    <TextGauge sizeX="2" sizeY="1" Name="Geschwindigkeit" Unit="Speed_kmh" ValueMultiplier="3.6" FtdID="Geschwindigkeit" />
+    <TextGauge row="1" sizeX="2" sizeY="1" Name="Strecken-Km" FtdID="KilometrierungZugSpitze" NumDecimals="1" />
+    <TextGauge row="2" sizeX="2" sizeY="1" Name="Fahrstufe" FtdID="Fahrstufe">
+      <AltID>Fahrstufe</AltID>
+      <AltID>SteuerwagenFahrstufe</AltID>
+    </TextGauge>
+    <TextGauge row="3" sizeX="2" sizeY="1" Name="Oberstrom" Unit="Current" FtdID="Oberstrom">
+      <AltID>Oberstrom</AltID>
+      <AltID>SteuerwagenOberstrom</AltID>
+    </TextGauge>
+    <TextGauge row="4" sizeX="2" sizeY="1" Name="Zugkraft gesamt" IsSteuerwagen="true" Unit="Kraft" FtdID="SteuerwagenZugkraftGesamt">
+      <AltID>ZugkraftGesamt</AltID>
+      <AltID>SteuerwagenZugkraftGesamt</AltID>
+    </TextGauge>
+    <TextComponent row="5" sizeX="2" sizeY="3" type="ComponentZugbeeinflussungA" style="ComponentZugbeeinflussungText" />
+    <TextComponent row="8" sizeX="2" sizeY="3" type="ComponentLZB" style="ComponentLZBText" />
+    <TextGauge row="11" sizeX="2" sizeY="1" Name="HLL" Unit="Pressure" FtdID="DruckHauptluftleitung" NumDecimals="2" />
+    <TextGauge row="12" sizeX="2" sizeY="1" Name="Fahren/Bremsen" Unit="Beschleunigung" FtdID="BeschleunigungX" NumDecimals="4" />
+    <TextGauge row="13" sizeX="2" sizeY="1" type="ChronometerGauge" FtdID="LM_Uhrzeit" style="ChronometerText" />
+    <TextGauge row="14" sizeX="2" sizeY="1" type="ChronometerGauge" style="DateText" />
+    <TextComponent row="15" sizeX="2" sizeY="2" type="ComponentSifa" style="ComponentSifaText" />
+    <TextComponent row="17" sizeX="2" sizeY="5" type="ComponentTueren" style="ComponentTuerenText" />
+    <TextGauge row="22" sizeX="2" sizeY="1" Name="Zugkraftsoll Gesamt" Unit="Kraft" FtdID="ZugkraftSollGesamt">
+      <AltID>ZugkraftSollGesamt</AltID>
+      <AltID>SteuerwagenZugkraftSollGesamt</AltID>
+    </TextGauge>
+    <TextGauge row="23" sizeX="2" sizeY="1" Name="Zugkraftsoll p. A." Unit="Kraft" FtdID="ZugkraftSollProAchse">
+      <AltID>ZugkraftSollProAchse</AltID>
+      <AltID>SteuerwagenZugkraftSollProAchse</AltID>
+    </TextGauge>
+    <TextGauge row="24" sizeX="2" sizeY="1" Name="Zugkraftvorschlag AP" Unit="Kraft" FtdID="ZugkraftvorschlagAutopilot" />
+    <TextGauge row="25" sizeX="2" sizeY="1" Name="Zug-/Bremskraftsoll" FtdID="ZugBremskraftSollNormiert" NumDecimals="2">
+      <AltID>ZugBremskraftSollNormiert</AltID>
+      <AltID>SteuerwagenZugBremskraftSollNormiert</AltID>
+    </TextGauge>
+    <TextGauge row="26" sizeX="2" sizeY="1" Name="Z.-/B.-kraftsoll abs." FtdID="ZugBremskraftSollAbsolutNormiert" NumDecimals="2">
+      <AltID>ZugBremskraftSollAbsolutNormiert</AltID>
+      <AltID>SteuerwagenZugBremskraftSollAbsolutNormiert</AltID>
+    </TextGauge>
+    <TextGauge row="27" sizeX="2" sizeY="1" Name="zurückgel. Weg" Unit="Lengthx1000" FtdID="ZurueckgelegterGesamtweg" NumDecimals="1" DialScale="1000" />
+    <TextGauge row="28" sizeX="2" sizeY="1" Name="AFB-Sollgeschwind." Unit="Speed_kmh" ValueMultiplier="3.6" FtdID="AFBSollgeschwindigkeit" />
+    <TextGauge row="29" sizeX="2" sizeY="1" Name="Geschwindigkeit" Unit="Speed_kmh" ValueMultiplier="3.6" FtdID="Geschwindigkeit" />
+    <TextGauge row="30" sizeX="2" sizeY="1" Name="Höchstgeschwindigk." Unit="Speed_kmh" ValueMultiplier="3.6" FtdID="StreckenMaxGeschwindigkeit" />
+  </Layout>
+</ZusiMeter>

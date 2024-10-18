@@ -44,7 +44,9 @@ namespace ZusiMeter.Data
     public static readonly DependencyProperty ShouldLoggingProperty = DependencyProperty.Register(nameof (ShouldLogging), typeof (bool), typeof (DataManager), new PropertyMetadata((object) false));
     public static readonly DependencyProperty ShowConsoleProperty = DependencyProperty.Register(nameof (ShowConsole), typeof (bool), typeof (DataManager), new PropertyMetadata((object) false));
     public static readonly DependencyProperty UpdateBorderOffsetProperty = DependencyProperty.Register(nameof (UpdateBorderOffset), typeof (double), typeof (DataManager), new PropertyMetadata((object) 300.0));
-    
+
+    //public static readonly DependencyProperty PrivateLayoutFolderProperty = DependencyProperty.Register(nameof(DataManager.PrivateLayoutFolder), typeof(string), typeof(DataManager), new PropertyMetadata((object)"test", new PropertyChangedCallback(DataManager.OnPrivateLayoutFolderChanged)));
+
     public bool AutoUpdate
     {
       get => (bool) this.GetValue(DataManager.AutoUpdateProperty);
@@ -93,6 +95,33 @@ namespace ZusiMeter.Data
       set => this.SetValue(DataManager.LayoutNameProperty, (object) value);
     }
 
+
+    private static void OnAutoUpdateChanged(
+      DependencyObject d,
+      DependencyPropertyChangedEventArgs e)
+    {
+      (d as DataManager).OnAutoUpdateChanged((bool)e.NewValue);
+    }
+
+    private void OnAutoUpdateChanged(bool value)
+    {
+      Settings.Default.AutoUpdate = value;
+      Settings.Default.Save();
+    }
+
+    //private static void OnPrivateLayoutFolderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    //{
+    //  (d as DataManager).OnPrivateLayoutFolderChanged((string)e.NewValue);
+    //}
+
+    //private void OnPrivateLayoutFolderChanged(string PrivateLayoutFolder)
+    //{
+    //  //if (!MainWindow._initialized)
+    //  //  return;
+    //  Settings.Default.PrivateLayoutFolder = PrivateLayoutFolder;
+    //  Settings.Default.Save();
+    //}
+
     public double PackedHeight
     {
       get => (double) this.GetValue(DataManager.PackedHeightProperty);
@@ -104,6 +133,12 @@ namespace ZusiMeter.Data
       get => (double) this.GetValue(DataManager.PackedWidthProperty);
       set => this.SetValue(DataManager.PackedWidthProperty, (object) value);
     }
+
+    //public string PrivateLayoutFolder
+    //{
+    //  get => (string)this.GetValue(DataManager.PrivateLayoutFolderProperty);
+    //  set => this.SetValue(DataManager.PrivateLayoutFolderProperty, (object)value);
+    //}
 
     public string SelectedLayoutFile
     {
@@ -217,8 +252,9 @@ namespace ZusiMeter.Data
 
     private void ObtainLayoutFiles()
     {
+
       //string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "ZusiMeterLayouts");
-      string path = MainWindow.GetZusiMeterLayoutFileDir();
+      /*string path = MainWindow.GetZusiMeterLayoutFileDir();
       if (!Directory.Exists(path))
         return;
       foreach (string enumerateFile in Directory.EnumerateFiles(path, "*.zmlf", SearchOption.TopDirectoryOnly))
@@ -226,23 +262,37 @@ namespace ZusiMeter.Data
         if (!enumerateFile.Contains<char>('~'))
           this._layoutFiles.Add(enumerateFile);
       }
+      */
+
+      string path;
+
+      if (MainWindow.IsOptionSet("1"))
+        {
+
+        path = MainWindow.GetCurrentExampleLayoutFolder();
+
+        if (Directory.Exists(path))
+          foreach (string enumerateFile in Directory.EnumerateFiles(path, "*.zmlf", SearchOption.TopDirectoryOnly))
+          {
+            if (!enumerateFile.Contains<char>('~'))
+              this._layoutFiles.Add(enumerateFile);
+          }
+      }
+
+      path = MainWindow.GetCurrentLayoutFolder(); //Path.Combine(GetZusiMeterLayoutFileDir());
+
+      if (Directory.Exists(path))
+        
+        foreach (string enumerateFile in Directory.EnumerateFiles(path, "*.zmlf", SearchOption.TopDirectoryOnly))
+        {
+          if (!enumerateFile.Contains<char>('~'))
+            this._layoutFiles.Add(enumerateFile);
+        }
+
       if (!string.IsNullOrEmpty(this.LayoutFileName))
       {
         SelectLayoutFile(this.LayoutFileName);
       }
-    }
-
-    private static void OnAutoUpdateChanged(
-      DependencyObject d,
-      DependencyPropertyChangedEventArgs e)
-    {
-      (d as DataManager).OnAutoUpdateChanged((bool) e.NewValue);
-    }
-
-    private void OnAutoUpdateChanged(bool value)
-    {
-      Settings.Default.AutoUpdate = value;
-      Settings.Default.Save();
     }
   }
 }

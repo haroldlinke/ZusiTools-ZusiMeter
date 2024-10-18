@@ -66,6 +66,24 @@ namespace ZusiMeter.Properties
 
     [UserScopedSetting]
     [DebuggerNonUserCode]
+    [DefaultSettingValue("")]
+    public string PrivateLayoutFolder
+    {
+      get => (string)this[nameof(PrivateLayoutFolder)];
+      set => this[nameof(PrivateLayoutFolder)] = (object)value;
+    }
+
+    [UserScopedSetting]
+    [DebuggerNonUserCode]
+    [DefaultSettingValue("")]
+    public string ExampleLayoutFolder
+    {
+      get => (string)this[nameof(ExampleLayoutFolder)];
+      set => this[nameof(ExampleLayoutFolder)] = (object)value;
+    }
+
+    [UserScopedSetting]
+    [DebuggerNonUserCode]
     [DefaultSettingValue("0.5")]
     public double RailRunnerVolume
     {
@@ -91,6 +109,15 @@ namespace ZusiMeter.Properties
     {
       get => (int) this[nameof (ZusiConfiguration)];
       set => this[nameof (ZusiConfiguration)] = (object) value;
+    }
+
+    [UserScopedSetting]
+    [DebuggerNonUserCode]
+    [DefaultSettingValue("1,2")]
+    public string OptionListSelectedItems
+    {
+      get => (string)this[nameof(OptionListSelectedItems)];
+      set => this[nameof(OptionListSelectedItems)] = (object)value;
     }
   }
 }
