@@ -47,6 +47,11 @@ using ZusiMeter.Properties;
 using Zusisuplib;
 using System.Windows.Interop;
 using System.Net.Sockets;
+//using System.Windows.Forms;
+//using System.Windows.Forms;
+//using System.Windows.Forms;
+using CheckListBox=Xceed.Wpf.Toolkit.CheckListBox;
+using System.Runtime.CompilerServices;
 
 namespace ZusiMeter
 {
@@ -74,7 +79,9 @@ namespace ZusiMeter
     private readonly bool _dataCancellation;
     private bool _trackWindow;
     private string? _curentlayoutfile = null;
-    private static string? _currentlayoutfolder = null;  
+    private static string? _selectedOptions = null;
+    private static string? _currentlayoutfolder = null;
+    private static string? _currentexamplelayoutfolder = null;
     private static readonly DependencyPropertyKey _keyCanActivate = DependencyProperty.RegisterReadOnly(nameof (CanActivate), typeof (bool), typeof (MainWindow), new PropertyMetadata((object) true));
     public static readonly DependencyProperty CanActivateProperty = MainWindow._keyCanActivate.DependencyProperty;
     public static readonly DependencyProperty HostProperty = DependencyProperty.Register(nameof (Host), typeof (string), typeof (MainWindow), new PropertyMetadata((object) null, new PropertyChangedCallback(MainWindow.OnHostChanged)));
@@ -86,6 +93,8 @@ namespace ZusiMeter
     public static readonly DependencyProperty PortProperty = DependencyProperty.Register(nameof (Port), typeof (int), typeof (MainWindow), new PropertyMetadata((object) 0, new PropertyChangedCallback(MainWindow.OnPortChanged)));
     private static readonly DependencyPropertyKey _selectLayoutKey = DependencyProperty.RegisterReadOnly(nameof (SelectLayout), typeof (bool), typeof (MainWindow), new PropertyMetadata((object) true));
     public static readonly DependencyProperty SelectLayoutProperty = MainWindow._selectLayoutKey.DependencyProperty;
+    private static readonly DependencyPropertyKey _showMainMenuKey = DependencyProperty.RegisterReadOnly(nameof(ShowMainMenu), typeof(bool), typeof(MainWindow), new PropertyMetadata((object)true));
+    public static readonly DependencyProperty ShowMainMenuProperty = MainWindow._showMainMenuKey.DependencyProperty;
     private static readonly DependencyPropertyKey _zoomKey = DependencyProperty.RegisterReadOnly(nameof (Zoom), typeof (double), typeof (MainWindow), new PropertyMetadata((object) 1.0));
     public static readonly DependencyProperty ZoomProperty = MainWindow._zoomKey.DependencyProperty;
     public static readonly DependencyProperty ZusiConfigurationProperty = DependencyProperty.Register(nameof (ZusiConfiguration), typeof (ZusiConfigurationMode), typeof (MainWindow), new PropertyMetadata((object) (ZusiConfigurationMode) Settings.Default.ZusiConfiguration, new PropertyChangedCallback(OnZusiConfigurationChanged)));
@@ -94,6 +103,10 @@ namespace ZusiMeter
     private static readonly DependencyPropertyKey _keyZusiConnectionString = DependencyProperty.RegisterReadOnly(nameof (ZusiConnectionString), typeof (string), typeof (MainWindow), new PropertyMetadata((PropertyChangedCallback) null));
     
     public static readonly DependencyProperty ZusiConnectionStringProperty = MainWindow._keyZusiConnectionString.DependencyProperty;
+
+    public static readonly DependencyProperty PrivateLayoutFolderProperty = DependencyProperty.Register(nameof(PrivateLayoutFolder), typeof(string), typeof(MainWindow), new PropertyMetadata((object)"", new PropertyChangedCallback(OnPrivateLayoutFolderChanged)));
+    public static readonly DependencyProperty ExampleLayoutFolderProperty = DependencyProperty.Register(nameof(ExampleLayoutFolder), typeof(string), typeof(MainWindow), new PropertyMetadata((object)"", new PropertyChangedCallback(OnExampleLayoutFolderChanged)));
+
     public static readonly RoutedUICommand CommandLoadLayout = new RoutedUICommand("Aktuelles _Layout anzeigen", nameof (CommandLoadLayout), typeof (MainWindow));
     public static readonly RoutedUICommand CommandLoadOtherLayout = new RoutedUICommand("_Anderes Layout anzeigen", nameof (CommandLoadOtherLayout), typeof (MainWindow), CommandKey.F(Key.F2));
     public static readonly RoutedUICommand CommandQuit = new RoutedUICommand("_Beenden", nameof(CommandQuit), typeof(MainWindow), CommandKey.Alt_F(Key.F4));
@@ -123,7 +136,32 @@ namespace ZusiMeter
     public static readonly RoutedUICommand CommandMinimizeApp = new RoutedUICommand("", nameof (CommandMinimizeApp), typeof (MainWindow));
     public static readonly RoutedUICommand CommandSendToAutoStart = new RoutedUICommand("Layout zu ZUSI-Autostart hinzufügen", nameof(CommandSendToAutoStart), typeof(MainWindow));
     public static readonly RoutedUICommand CommandOpenIPConnConf = new RoutedUICommand("TCP/IP Verbindung einstellen", nameof(CommandOpenIPConnConf), typeof(MainWindow));
-        public bool CanActivate
+
+    // public ObservableCollection<string> OptionItems { get; }
+
+
+
+    public ObservableCollection<OptionItem> OptionItems
+    {
+      get;
+      set;
+    }
+
+    public class OptionItem
+    {
+      public string Key
+      {
+        get;
+        set;
+      }
+      public string Text
+      {
+        get;
+        set;
+      }
+    }
+
+  public bool CanActivate
     {
       get => (bool) this.GetValue(MainWindow.CanActivateProperty);
       private set => this.SetValue(MainWindow._keyCanActivate, (object) value);
@@ -159,10 +197,38 @@ namespace ZusiMeter
       set => this.SetValue(MainWindow.PortProperty, (object) value);
     }
 
+    public string PrivateLayoutFolder
+    {
+      get => (string)this.GetValue(MainWindow.PrivateLayoutFolderProperty);
+      set => this.SetValue(MainWindow.PrivateLayoutFolderProperty, (object)value);
+    }
+
+    public string ExampleLayoutFolder
+    {
+      get => (string)this.GetValue(MainWindow.ExampleLayoutFolderProperty);
+      set => this.SetValue(MainWindow.ExampleLayoutFolderProperty, (object)value);
+    }
+
+    public static string GetCurrentLayoutFolder()
+    {
+      return _currentlayoutfolder;
+    }
+
+    public static string GetCurrentExampleLayoutFolder()
+    {
+      return _currentexamplelayoutfolder;
+    }
+
     public bool SelectLayout
     {
-      get => (bool) this.GetValue(MainWindow.SelectLayoutProperty);
-      private set => this.SetValue(MainWindow._selectLayoutKey, (object) value);
+      get => (bool) this.GetValue(MainWindow.ShowMainMenuProperty);
+      private set => this.SetValue(MainWindow._showMainMenuKey, (object) value);
+    }
+
+    public bool ShowMainMenu
+    {
+      get => (bool)this.GetValue(MainWindow.SelectLayoutProperty);
+      private set => this.SetValue(MainWindow._selectLayoutKey, (object)value);
     }
 
     public double Zoom
@@ -214,6 +280,31 @@ namespace ZusiMeter
         }
         return _currentlayoutfolder;
     }
+    
+    public static string GetZusiMeterExampleFileDir()
+    {
+      if (string.IsNullOrEmpty(_currentexamplelayoutfolder))
+      {
+        string? executablePath = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName);
+
+        if (executablePath != null)
+        {
+          string folderpath = Path.Combine(executablePath, "ZusiMeterExampleLayouts");
+          if (!Directory.Exists(folderpath))
+          {
+            Directory.CreateDirectory(folderpath);
+
+          }
+          _currentexamplelayoutfolder = folderpath;
+        }
+        else
+        {
+          _currentexamplelayoutfolder = "";
+        }
+        
+      }
+      return _currentexamplelayoutfolder;
+    }
 
     private static readonly string _defaultSavePrompt = "Soll das aktuelle Layout schnell noch gespeichert werden?";
     private static readonly string _defaultSavePrompt2 = "Das aktuelle Layout ist leer. Soll dieses Layout gelöscht werden?";
@@ -253,14 +344,22 @@ namespace ZusiMeter
 
     public MainWindow()
     {
-      this.Host = Settings.Default.HostOrIP;
-      this.Port = Settings.Default.Port;
+
+      this.DataContext = this; 
+     
+      //OptionItems = new ObservableCollection<string> { "First", "Second", "Third" };
       //if (Settings.Default.VintageBackground) // **HLI
       //  BackgroundSettings.SetVintageBackground(); // **HLI
       this._background = new LayoutBackground();
+      this.OptionItems = new ObservableCollection<OptionItem>()
+      {
+        new OptionItem() { Key = "1", Text = "Zeige Beispiellayouts an" },
+      };
+      this.ReadOptions();
+
       this.ObtainLayoutFiles();
       this.InitializeComponent();
-      //this.DataContext = this;
+
       this._initialized = true;
       this._timerZusiMelderConf.AutoReset = false;
       this._timerZusiMelderConf.Elapsed += new ElapsedEventHandler(this.TimerZusiMelderConf_Elapsed);
@@ -300,7 +399,8 @@ namespace ZusiMeter
       e.Cancel = !this.SavePropmt((string)null);
       Disposable.Dispose<BeaconReceiver>(ref this._beaconReceiver);
       //this.DisconnectFahrpult();
-      Zusiaccess.CreateZUSIMenuEntry(Bezeichnertext: "ZusiMeter", Vatermenu: "SpTBXSubmenuItemKonfiguration", MenuIndex: 17, Params: _curentlayoutfile);
+      Zusiaccess.CreateZUSIMenuEntry(Bezeichnertext: "ZusiMeter (Layoutauswahl)", Vatermenu: "SpTBXSubmenuItemKonfiguration", MenuIndex: 17);
+      Zusiaccess.CreateZUSIMenuEntry(Bezeichnertext: "ZusiMeter (Letztes Layout)", Vatermenu: "SpTBXSubmenuItemKonfiguration", MenuIndex: 18, Params: _curentlayoutfile);
     }
 
     private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -308,16 +408,7 @@ namespace ZusiMeter
       this.DataProcessor();
       string[] commandLineArgs = Environment.GetCommandLineArgs();
       BackgroundSettings.ApplyUserSettings(Settings.Default.DefaultDialBackground, Settings.Default.DefaultTextBackground);
-    //string message = "";
-
-    //for (int i = 0; i < commandLineArgs.Length; i++)
-    //      {
-    //          message = message + commandLineArgs[i] + "\n";
-    //      }
-    //if (commandLineArgs.Length > 0)
-    //          MessageBox.Show(message);
-
-    if (commandLineArgs.Length == 2 && System.IO.File.Exists(commandLineArgs[1]))
+      if (commandLineArgs.Length == 2 && System.IO.File.Exists(commandLineArgs[1]))
       {
         this.CheckConfiguration();
         //this.Dispatcher.BeginInvoke((Delegate) (s => this.LoadLayout(s)), DispatcherPriority.Loaded, (object) commandLineArgs[1]); **HLI
@@ -515,12 +606,52 @@ namespace ZusiMeter
       helpDlg.ShowDialog();
     }
 
+    public static bool IsOptionSet(string option)
+    {
+      if (string.IsNullOrEmpty(option)) return false;
+      if (_selectedOptions.Contains(option)) return true;
+      return false;
+    }
+    
+    private void ReadOptions()
+    {
+      this.Host = Settings.Default.HostOrIP;
+      this.Port = Settings.Default.Port;
+      this.PrivateLayoutFolder = Settings.Default.PrivateLayoutFolder;
+
+      if (string.IsNullOrEmpty(this.PrivateLayoutFolder))
+      {
+        this.PrivateLayoutFolder = GetZusiMeterLayoutFileDir();
+      }
+      _currentlayoutfolder = this.PrivateLayoutFolder;
+      
+
+      this.ExampleLayoutFolder = Settings.Default.ExampleLayoutFolder;
+      if (string.IsNullOrEmpty(this.ExampleLayoutFolder))
+      {
+        this.ExampleLayoutFolder = GetZusiMeterExampleFileDir();
+      }
+      _currentexamplelayoutfolder = this.ExampleLayoutFolder;
+
+      _selectedOptions = Properties.Settings.Default.OptionListSelectedItems;
+    }
 
     private void OnOptions(object sender, ExecutedRoutedEventArgs e)
     {
       OptionsDlg optionsDlg = new OptionsDlg(this);
       optionsDlg.Owner = (Window)this;
-      optionsDlg.ShowDialog();
+
+     
+      optionsDlg.OptionsListBox.SelectedValue = _selectedOptions;
+      bool? result = optionsDlg.ShowDialog();
+      if (result==true)
+      {
+        _selectedOptions = optionsDlg.OptionsListBox.SelectedValue;
+        Properties.Settings.Default.OptionListSelectedItems = _selectedOptions;
+        Properties.Settings.Default.Save();
+        ReadOptions();
+        DataManager.Instance.RefreshLayouts();
+      }
     }
 
     private static void OnHostChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -567,6 +698,35 @@ namespace ZusiMeter
       this.DisconnectFahrpult();
       this._mustReconnect = true;
     }
+
+    private static void OnPrivateLayoutFolderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+      (d as MainWindow).OnPrivateLayoutFolderChanged((string)e.NewValue);
+    }
+
+    private void OnPrivateLayoutFolderChanged(string PrivateLayoutFolder)
+    {
+      if (!this._initialized)
+        return;
+      Settings.Default.PrivateLayoutFolder = PrivateLayoutFolder;
+      Settings.Default.Save();
+      _currentlayoutfolder = PrivateLayoutFolder;
+    }
+
+    private static void OnExampleLayoutFolderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+      (d as MainWindow).OnExampleLayoutFolderChanged((string)e.NewValue);
+    }
+
+    private void OnExampleLayoutFolderChanged(string ExampleLayoutFolder)
+    {
+      if (!this._initialized)
+        return;
+      Settings.Default.ExampleLayoutFolder =ExampleLayoutFolder;
+      Settings.Default.Save();
+      _currentexamplelayoutfolder = ExampleLayoutFolder;
+    }
+
 
     private static void OnTopChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -678,6 +838,7 @@ namespace ZusiMeter
       if (!this.SavePropmt("Soll das aktuelle Layout schnell noch gespeichert werden?"))
         return;
       this.SelectLayout = true;
+      this.ShowMainMenu = true;
       this.startPage.Visibility = Visibility.Visible;
       this.editorPage.Visibility = Visibility.Collapsed;
       Task.Run((Action) (() =>
@@ -735,7 +896,7 @@ namespace ZusiMeter
           return;
         case MessageBoxResult.Yes:
           string? executablePath = Process.GetCurrentProcess().MainModule?.FileName;
-          Zusiaccess.CreateZUSIAutoStartEntry(executablePath,_curentlayoutfile);
+          Zusiaccess.CreateZUSIAutoStartEntry(executablePath, (string)this.startPage.lvLayoutFiles.SelectedItem);
 
           return;
                     
@@ -787,6 +948,43 @@ namespace ZusiMeter
       e.CanExecute = this.WindowState != WindowState.Minimized;
     }
 
+    public void OnDefinePrivateLayoutFolder(object sender, ExecutedRoutedEventArgs e)
+    {
+      try
+      {
+        Debug.Print("OnDefinePrivateLayoutFolder");
+        System.Windows.Forms.FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog();
+        //fbd.RootFolder = Environment.SpecialFolder.MyDocuments;
+        fbd.ShowNewFolderButton = true;
+        fbd.Description = "Privates Layoutverzeichnis auswählen";
+
+        if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+          PrivateLayoutFolder = fbd.SelectedPath;
+      }
+
+      catch
+      { }
+    }
+
+    public void OnDefineExampleLayoutFolder(object sender, ExecutedRoutedEventArgs e)
+    {
+      try
+      {
+        Debug.Print("OnDefineExampleLayoutFolder");
+        System.Windows.Forms.FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog();
+        //fbd.RootFolder = Environment.SpecialFolder.MyDocuments;
+        fbd.ShowNewFolderButton = true;
+        fbd.Description = "Beispiellayoutverzeichnis auswählen";
+
+        if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+          ExampleLayoutFolder = fbd.SelectedPath;
+
+      }
+
+      catch
+      { }
+    }
+
     private void OnMinimize(object sender, ExecutedRoutedEventArgs e)
     {
       this.WindowState = WindowState.Minimized;
@@ -835,6 +1033,7 @@ namespace ZusiMeter
       this._willIPBoardSwitchVisible = this.IsIPBoardSwitchVisible = false;
       //this.DisconnectFahrpult();
       this.SelectLayout = false;
+      this.ShowMainMenu = false;
       this.startPage.Visibility = Visibility.Collapsed;
       this.editorPage.Visibility = Visibility.Collapsed;
       this._curentlayoutfile = layoutFileName;
@@ -953,7 +1152,17 @@ namespace ZusiMeter
     private void ObtainLayoutFiles()
     {
       //string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "ZusiMeterLayouts");
-      string path = Path.Combine(GetZusiMeterLayoutFileDir());
+      string path = _currentexamplelayoutfolder;
+
+      if (!Directory.Exists(path))
+        return;
+      foreach (string enumerateFile in Directory.EnumerateFiles(path, "*.zmlf", SearchOption.TopDirectoryOnly))
+      {
+        if (!enumerateFile.Contains<char>('~'))
+          this._layoutFiles.Add(enumerateFile);
+      }
+
+      path = _currentlayoutfolder; //Path.Combine(GetZusiMeterLayoutFileDir());
 
       if (!Directory.Exists(path))
         return;
@@ -966,6 +1175,10 @@ namespace ZusiMeter
 
     private void ConnectFahrpult()
     {
+      if (ZusiConnectionState == 2)
+      {
+        return;
+      }
       this._fahrpult.SetNeededData(this._gaugeIds.Distinct<ZFtdID>());
       this._fahrpult.SetNeededData(this._gaugeProgIds.Distinct<ZProgID>());
       if (Settings.Default.ZusiConfiguration == 0)
@@ -978,15 +1191,18 @@ namespace ZusiMeter
 
     private void CreateFahrpult()
     {
-      this._fahrpult = new FahrpultClient(ParsingMode.Internal, AsmInfo.Product, VersionEx.ToString(AsmInfo.Version, "%M.%m.%b"))
+      if (this._fahrpult == null)
       {
-        LogSocketExceptions = true,
-        WaitLoopTime = 4000
-      };
-      this._fahrpult.ClientConnected += new ClientConnectedEventHandler(this.Fahrpult_ClientConnected);
-      this._fahrpult.Disconnected += new EventHandler(this.Fahrpult_Disconnected);
-      this._fahrpult.FtdDataReceived += new FtdDataReceivedEventHandler(this.Fahrpult_FtdDataReceived);
-      this._fahrpult.ProgDataReceived += new ProgDataReceivedEventHandler(this.Fahrpult_ProgDataReceived);
+        this._fahrpult = new FahrpultClient(ParsingMode.Internal, AsmInfo.Product, VersionEx.ToString(AsmInfo.Version, "%M.%m.%b"))
+        {
+          LogSocketExceptions = true,
+          WaitLoopTime = 4000
+        };
+        this._fahrpult.ClientConnected += new ClientConnectedEventHandler(this.Fahrpult_ClientConnected);
+        this._fahrpult.Disconnected += new EventHandler(this.Fahrpult_Disconnected);
+        this._fahrpult.FtdDataReceived += new FtdDataReceivedEventHandler(this.Fahrpult_FtdDataReceived);
+        this._fahrpult.ProgDataReceived += new ProgDataReceivedEventHandler(this.Fahrpult_ProgDataReceived);
+      }
     }
 
     private void DisconnectFahrpult()
@@ -997,18 +1213,18 @@ namespace ZusiMeter
       this._fahrpult.Disconnected -= new EventHandler(this.Fahrpult_Disconnected);
       this._fahrpult.FtdDataReceived -= new FtdDataReceivedEventHandler(this.Fahrpult_FtdDataReceived);
       this._fahrpult.ProgDataReceived -= new ProgDataReceivedEventHandler(this.Fahrpult_ProgDataReceived);
-      //try
-      //{
-      //  this._fahrpult.Dispose();
-      //}
-      //catch
-      //{
-      //}
-      //finally
-      //{
-      //  this._fahrpult = (FahrpultClient) null;
-      this.Fahrpult_Disconnected((object) null, EventArgs.Empty);
-      //}
+      try
+      {
+        this._fahrpult.Dispose();
+      }
+      catch
+      {
+      }
+      finally
+      {
+        this._fahrpult = (FahrpultClient) null;
+        this.Fahrpult_Disconnected((object) null, EventArgs.Empty);
+      }
     }
 
     private void ReconnectFahrpult()
@@ -1058,6 +1274,7 @@ namespace ZusiMeter
       if (!this.SavePropmt((string)null))
           return;
       this.SelectLayout = true;
+      this.ShowMainMenu = true;
       this.editorPage.Visibility = Visibility.Collapsed;
       this.startPage.Visibility = Visibility.Visible;
     }
@@ -1067,6 +1284,7 @@ namespace ZusiMeter
       if (!this.SavePropmt("Soll das aktuelle Layout schnell noch gespeichert werden?"))
           return;
       this.SelectLayout = false;
+      this.ShowMainMenu = true;
       this.startPage.Visibility = Visibility.Collapsed;
       this.editorPage.Visibility = Visibility.Visible;
       this.editorPage.Dispatcher.BeginInvoke(new Action(() => this.editorPage.NewLayout(false)), DispatcherPriority.Loaded);
@@ -1077,6 +1295,7 @@ namespace ZusiMeter
       if (!this.SavePropmt("Soll das aktuelle Layout schnell noch gespeichert werden?"))
           return;
       this.SelectLayout = false;
+      this.ShowMainMenu = true;
       this.startPage.Visibility = Visibility.Collapsed;
       this.editorPage.Visibility = Visibility.Visible;
       this.editorPage.Dispatcher.BeginInvoke(new Action(() => this.editorPage.NewLayout(true)), DispatcherPriority.Loaded);
@@ -1087,6 +1306,7 @@ namespace ZusiMeter
       if (!this.SavePropmt("Soll das aktuelle Layout schnell noch gespeichert werden?"))
           return;
       this.SelectLayout = false;
+      this.ShowMainMenu = true;
       this.startPage.Visibility = Visibility.Collapsed;
       this.editorPage.Visibility = Visibility.Visible;
       //this.editorPage.Dispatcher.BeginInvoke((Delegate) (s => this.editorPage.LoadLayout(s)), DispatcherPriority.Loaded, (object) (string) this.startPage.lvLayoutFiles.SelectedItem);
@@ -1116,6 +1336,7 @@ namespace ZusiMeter
       if (!(nullable.GetValueOrDefault() == flag & nullable.HasValue))
           return;
       this.SelectLayout = false;
+      this.ShowMainMenu = true;
       this.startPage.Visibility = Visibility.Collapsed;
       this.editorPage.Visibility = Visibility.Visible;
       //this.editorPage.Dispatcher.BeginInvoke((Delegate) (s => this.editorPage.LoadLayout(s)), DispatcherPriority.Loaded, (object) openFileDialog2.FileName);
@@ -1133,6 +1354,7 @@ namespace ZusiMeter
     private void OnBackToLayout(object sender, ExecutedRoutedEventArgs e)
     {
       this.SelectLayout = true;
+      this.ShowMainMenu = true;
       DataManager.Instance.SelectLayoutFile(DataManager.Instance.LayoutFileName);
       this.startPage.Visibility = Visibility.Collapsed;
       this.editorPage.Visibility = Visibility.Visible;

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<ZusiMeter xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="zusimeter.xsd" version="1.3">
+  <Layout version="1.3" zoom="1">
+    <Background mode="burlwood" />
+    <RoundGauge row="5" sizeX="4" sizeY="4" type="Accelerometer" Unit="Beschleunigung" FtdID="BeschleunigungX" Maximum="1.5" Minimum="-2" NeedleColor="#FFFFFF31" SmallTickFrequency="0.1" TickFrequency="0.5" NumDecimals="2" />
+    <DigitalGauge sizeX="4" sizeY="1" type="DigitalNextStop" FtdID="ZurueckgelegterGesamtweg" />
+    <DigitalGauge col="4" sizeX="4" sizeY="1" type="DigitalStreckenKm" FtdID="KilometrierungZugSpitze" NumDecimals="1" />
+    <RoundGauge row="1" sizeX="4" sizeY="4" type="Tachometer" Indicator="TrackMaxSpeed" Unit="Speed_kmh" ValueMultiplier="3.6" FtdID="Geschwindigkeit" Maximum="120" NeedleColor="#FFFFFF31" SmallTickFrequency="5" GaugeNameFontSize="9" HasDigitalDisplay="true" />
+    <RoundGauge col="4" row="5" sizeX="4" sizeY="4" type="Dynamometer" Unit="Kraftx1000" FtdID="ZugkraftGesamt" Maximum="300000" NeedleColor="#FFFFFF31" SmallTickFrequency="10000" TickFrequency="50000" DialScale="1000" />
+    <RoundGauge col="4" row="1" sizeX="4" sizeY="4" type="Uhr" FtdID="LM_Uhrzeit" Maximum="12" NeedleColor="#FFF10000" SmallTickFrequency="0.2" TickFrequency="1" Foreground="#FF2F4F4F" SuppressFirstTickLabel="true" DialStartAngle="0" DialEndAngle="360" />
+    <Operator col="8" row="0" sizeX="4" sizeY="1" type="RailRunner" volume="0.4" />
+    <Component col="4" row="9" sizeX="4" sizeY="2" type="ComponentZugbeeinflussungA" />
+    <Component col="4" row="11" sizeX="4" sizeY="2" type="ComponentLZB" />
+    <Component row="9" sizeX="4" sizeY="4" type="ComponentTueren" />
+    <Component col="8" row="9" sizeX="4" sizeY="2" type="ComponentSifa" />
+    <Component col="8" row="11" sizeX="4" sizeY="2" type="ComponentFahrsperre" />
+    <RoundGauge col="8" row="1" sizeX="4" sizeY="4" type="Manometer" Unit="Pressure" FtdID="DruckHauptluftleitung" Maximum="12" NeedleColor="#FFFFFF31" SmallTickFrequency="0.2" TickFrequency="1" NumDecimals="2" />
+    <RoundGauge col="8" row="5" sizeX="4" sizeY="4" type="Fahrstufe" FtdID="Fahrstufe" LabelingFrequency="2" Maximum="28" NeedleColor="#FF800000" TickFrequency="1" HasDigitalDisplay="true" DialStartAngle="-180" DialEndAngle="156" />
+  </Layout>
+</ZusiMeter>

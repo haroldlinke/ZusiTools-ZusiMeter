@@ -67,7 +67,7 @@
 			<xs:enumeration value="ComponentSifa"/>
 			<xs:enumeration value="ComponentStromabnehmer"/>
 			<xs:enumeration value="ComponentZugbeeinflussungA"/>
-      <xs:enumeration value="ComponentZugbeeinflussungPZB_LZB"/>
+      <xs:enumeration value="ComponentPZB_LZB"/>
 			<xs:enumeration value="ComponentLZB"/>
 			<xs:enumeration value="ComponentFahrsperre"/>
 		</xs:restriction>
@@ -448,7 +448,7 @@
 			<xs:enumeration value="ComponentTuerenFreigabeText"/>
 			<xs:enumeration value="ComponentTuerenText"/>
 			<xs:enumeration value="ComponentZugbeeinflussungText"/>
-      <xs:enumeration value="ComponentZugbeeinflussungPZB_LZBText"/>
+      <xs:enumeration value="ComponentPZB_LZBText"/>
 		</xs:restriction>
 	</xs:simpleType>
 

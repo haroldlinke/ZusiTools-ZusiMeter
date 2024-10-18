@@ -14,8 +14,8 @@
         SizeToContent="WidthAndHeight" ResizeMode="CanResize" WindowStyle="ThreeDBorderWindow"
         Background="{DynamicResource NewBackgroundBrush}" Icon="Resources\zusimeter.ico"
         Title="{Binding Source={x:Static sl:AsmInfo.Product}}"
-        DataContext="{Binding Source={x:Static data:DataManager.Instance}}"
-        >
+        DataContext="{Binding Source={x:Static data:DataManager.Instance}}">
+
     <!--DataContext="{Binding RelativeSource={RelativeSource Self}}"-->
   <FrameworkElement.Resources>
         <ResourceDictionary/>
@@ -23,7 +23,10 @@
   <Grid>
      
     <DockPanel x:Name="mainPanel">
-            <Menu VerticalAlignment="Top" Grid.ColumnSpan="2" DockPanel.Dock="Top" Padding="0,3">
+            <!--<Menu VerticalAlignment="Top" Grid.ColumnSpan="2" DockPanel.Dock="Top" Padding="0,3"
+                  Visibility="{Binding ShowMainMenu, ElementName=mainWindow, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter={x:Static Visibility.Collapsed}}"
+                  >-->
+            <Menu VerticalAlignment="Top" Grid.ColumnSpan="2" DockPanel.Dock="Top" Padding="0,0">
                 <Control.Background>
                     <LinearGradientBrush>
                         <GradientStop Offset="0" Color="#FF76A8FF"/>
@@ -56,12 +59,12 @@
                     <!--<Separator/>
                     <MenuItem Header="_Eigenschaften" IsEnabled="false"/>-->
                 </MenuItem>
-                <MenuItem Header="_Einstellungen">
-                    <MenuItem Command="{x:Static local:MainWindow.CommandOptions}" CommandTarget="{Binding ElementName=window}"/>
+                <MenuItem Header="_Einstellungen" Visibility="{Binding SelectLayout, ElementName=mainWindow,Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter={x:Static Visibility.Collapsed}}">
+                    <MenuItem Command="{x:Static local:MainWindow.CommandOptions}" CommandTarget="{Binding ElementName=mainWindow}"/>
                 </MenuItem>
                 <MenuItem Header="_Info">
-                    <MenuItem Command="{x:Static local:MainWindow.CommandAbout}" CommandTarget="{Binding ElementName=window}"/>
-                    <MenuItem Command="{x:Static local:MainWindow.CommandHelp}" CommandTarget="{Binding ElementName=window}"/>
+                    <MenuItem Command="{x:Static local:MainWindow.CommandAbout}" CommandTarget="{Binding ElementName=mainWindow}"/>
+                    <MenuItem Command="{x:Static local:MainWindow.CommandHelp}" CommandTarget="{Binding ElementName=mainWindow}"/>
                 </MenuItem>
             </Menu>
             <StatusBar MouseRightButtonDown="StatusBar_MouseRightButtonDown" DockPanel.Dock="Bottom">
@@ -92,7 +95,7 @@
         </StatusBarItem>-->
         <StatusBarItem>
           <StackPanel Orientation="Horizontal"
-                      Visibility="{Binding SelectLayout, Converter={StaticResource ReverseBoolToVisibilityConverter}, ConverterParameter={x:Static Visibility.Collapsed}}">
+                      Visibility="{Binding SelectLayout, ElementName=mainWindow, Converter={StaticResource ReverseBoolToVisibilityConverter}, ConverterParameter={x:Static Visibility.Collapsed}}">
             <ToggleButton Width="12" Height="12" BorderThickness="0" ToolTip="Fenster immer sichtbar"
                           Style="{DynamicResource TopmostToggleButtonStyle}"
                           IsChecked="{Binding Topmost, ElementName=mainWindow, Mode=TwoWay}"/>
@@ -103,10 +106,10 @@
                     Style="{DynamicResource PauseButtonStyle}" Command="{x:Static local:MainWindow.CommandPause}"/>
             <Button Width="12" Height="12" Margin="6,0,0,0" BorderThickness="0" ToolTip="Zeitsprung"
                     Style="{DynamicResource TimejumpButtonStyle}" Command="{x:Static local:MainWindow.CommandTimejump}"/>
-            <!--<Button Width="12" Height="12" Margin="12,0,0,0" BorderThickness="0" ToolTip="Layout-Auswahl"
+            <Button Width="12" Height="12" Margin="12,0,0,0" BorderThickness="0" ToolTip="Zurück zur Layout-Auswahl"
                     Style="{DynamicResource BackButtonStyle}" Command="{x:Static local:MainWindow.CommandBack}"/>
             <Button Width="12" Height="12" Margin="12,0,0,0" BorderThickness="0" ToolTip="Zu ZUSI AutoStart hinzufügen"
-                    Style="{DynamicResource SendToAutoStartButtonStyle}" Command="{x:Static local:MainWindow.CommandSendToAutoStart}"/>-->
+                    Style="{DynamicResource SendToAutoStartButtonStyle}" Command="{x:Static local:MainWindow.CommandSendToAutoStart}"/>
                     </StackPanel>
         </StatusBarItem>
         <StatusBarItem HorizontalAlignment="Right">
@@ -120,7 +123,7 @@
                      ToolTip="{Binding ZusiConnectionString, ElementName=mainWindow, Mode=OneWay}">
                      <Ellipse.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Verbindung einstellen" Command="{x:Static local:MainWindow.CommandOptions}" CommandTarget="{Binding ElementName=window}"/>
+                            <MenuItem Header="Verbindung einstellen" Command="{x:Static local:MainWindow.CommandOptions}" CommandTarget="{Binding ElementName=mainWindow}"/>
                          </ContextMenu>
                       </Ellipse.ContextMenu>
              </Ellipse>
@@ -130,7 +133,7 @@
       <Border>
         <Grid>
           <Grid x:Name="layoutGrid"
-                Visibility="{Binding SelectLayout, Converter={StaticResource ReverseBoolToVisibilityConverter}, ConverterParameter={x:Static Visibility.Collapsed}}"
+                Visibility="{Binding SelectLayout, ElementName=mainWindow, Converter={StaticResource ReverseBoolToVisibilityConverter}, ConverterParameter={x:Static Visibility.Collapsed}}"
                 Background="{Binding ElementName=mainWindow, Path=LayoutBackground.Background, Mode=OneWay}">
             <FrameworkElement.LayoutTransform>
               <ScaleTransform CenterX="0" CenterY="0" ScaleX="{Binding Zoom, ElementName=mainWindow, Mode=OneWay}"
@@ -230,7 +233,7 @@
         </Grid>
       </Border>
             <Grid>
-                <pg:StartPage x:Name="startPage" Visibility="{Binding SelectLayout, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter={x:Static Visibility.Collapsed}}"/>
+                <pg:StartPage x:Name="startPage" Visibility="{Binding SelectLayout, ElementName=mainWindow, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter={x:Static Visibility.Collapsed}}"/>
                 <pg:EditorPage x:Name="editorPage" Visibility="Collapsed"/>
             </Grid>
         </DockPanel>

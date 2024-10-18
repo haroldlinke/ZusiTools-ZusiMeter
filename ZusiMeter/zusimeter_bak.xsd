@@ -67,7 +67,7 @@
 			<xs:enumeration value="ComponentSifa"/>
 			<xs:enumeration value="ComponentStromabnehmer"/>
 			<xs:enumeration value="ComponentZugbeeinflussungA"/>
-      <xs:enumeration value="ComponentZugbeeinflussungPZB_LZB"/>
+      <xs:enumeration value="ComponentPZB_LZB"/>
 			<xs:enumeration value="ComponentLZB"/>
 			<xs:enumeration value="ComponentFahrsperre"/>
 		</xs:restriction>
@@ -106,8 +106,6 @@
 			<xs:enumeration value="Luftpresser"/>
 			<xs:enumeration value="Schienenstoss"/>
 			<xs:enumeration value="Stahlbruecke"/>
-			<!-- Spezial (nur LMSifa aus StatusSifa) -->
-			<xs:enumeration value="StatusSifa"/>
 			<xs:enumeration value="Steinbruecke"/>
 			<xs:enumeration value="SteuerwagenHauptschalter"/>
 			<xs:enumeration value="SteuerwagenLuefter"/>
@@ -142,66 +140,6 @@
 			<xs:enumeration value="DruckZeitbehaelter"/>
 			<xs:enumeration value="Fahrleitungsspannung"/>
 			<xs:enumeration value="Fahrstufe"/>
-			<xs:enumeration value="Fahrzeugintern_01"/>
-			<xs:enumeration value="Fahrzeugintern_02"/>
-			<xs:enumeration value="Fahrzeugintern_03"/>
-			<xs:enumeration value="Fahrzeugintern_04"/>
-			<xs:enumeration value="Fahrzeugintern_05"/>
-			<xs:enumeration value="Fahrzeugintern_06"/>
-			<xs:enumeration value="Fahrzeugintern_07"/>
-			<xs:enumeration value="Fahrzeugintern_08"/>
-			<xs:enumeration value="Fahrzeugintern_09"/>
-			<xs:enumeration value="Fahrzeugintern_10"/>
-			<xs:enumeration value="Fahrzeugintern_11"/>
-			<xs:enumeration value="Fahrzeugintern_12"/>
-			<xs:enumeration value="Fahrzeugintern_13"/>
-			<xs:enumeration value="Fahrzeugintern_14"/>
-			<xs:enumeration value="Fahrzeugintern_15"/>
-			<xs:enumeration value="Fahrzeugintern_16"/>
-			<xs:enumeration value="Fahrzeugintern_17"/>
-			<xs:enumeration value="Fahrzeugintern_18"/>
-			<xs:enumeration value="Fahrzeugintern_19"/>
-			<xs:enumeration value="Fahrzeugintern_20"/>
-			<xs:enumeration value="Fahrpultintern_01"/>
-			<xs:enumeration value="Fahrpultintern_02"/>
-			<xs:enumeration value="Fahrpultintern_03"/>
-			<xs:enumeration value="Fahrpultintern_04"/>
-			<xs:enumeration value="Fahrpultintern_05"/>
-			<xs:enumeration value="Fahrpultintern_06"/>
-			<xs:enumeration value="Fahrpultintern_07"/>
-			<xs:enumeration value="Fahrpultintern_08"/>
-			<xs:enumeration value="Fahrpultintern_09"/>
-			<xs:enumeration value="Fahrpultintern_10"/>
-			<xs:enumeration value="Fahrpultintern_11"/>
-			<xs:enumeration value="Fahrpultintern_12"/>
-			<xs:enumeration value="Fahrpultintern_13"/>
-			<xs:enumeration value="Fahrpultintern_14"/>
-			<xs:enumeration value="Fahrpultintern_15"/>
-			<xs:enumeration value="Fahrpultintern_16"/>
-			<xs:enumeration value="Fahrpultintern_17"/>
-			<xs:enumeration value="Fahrpultintern_18"/>
-			<xs:enumeration value="Fahrpultintern_19"/>
-			<xs:enumeration value="Fahrpultintern_20"/>
-			<xs:enumeration value="Fahrpultintern_21"/>
-			<xs:enumeration value="Fahrpultintern_22"/>
-			<xs:enumeration value="Fahrpultintern_23"/>
-			<xs:enumeration value="Fahrpultintern_24"/>
-			<xs:enumeration value="Fahrpultintern_25"/>
-			<xs:enumeration value="Fahrpultintern_26"/>
-			<xs:enumeration value="Fahrpultintern_27"/>
-			<xs:enumeration value="Fahrpultintern_28"/>
-			<xs:enumeration value="Fahrpultintern_29"/>
-			<xs:enumeration value="Fahrpultintern_30"/>
-			<xs:enumeration value="Fahrpultintern_31"/>
-			<xs:enumeration value="Fahrpultintern_32"/>
-			<xs:enumeration value="Fahrpultintern_33"/>
-			<xs:enumeration value="Fahrpultintern_34"/>
-			<xs:enumeration value="Fahrpultintern_35"/>
-			<xs:enumeration value="Fahrpultintern_36"/>
-			<xs:enumeration value="Fahrpultintern_37"/>
-			<xs:enumeration value="Fahrpultintern_38"/>
-			<xs:enumeration value="Fahrpultintern_39"/>
-			<xs:enumeration value="Fahrpultintern_40"/>
 			<xs:enumeration value="Geschwindigkeit"/>
 			<xs:enumeration value="GeschwindigkeitAbsolut"/>
 			<xs:enumeration value="GeschwindigkeitAbsolut_Schleudern"/>
@@ -216,8 +154,8 @@
 			<xs:enumeration value="Motorspannung"/>
 			<xs:enumeration value="Motorstrom"/>
 			<xs:enumeration value="Oberstrom"/>
+      <xs:enumeration value="SollDruck_Hauptluftleitung"/>
 			<xs:enumeration value="StatusZugverband"/>
-                        <xs:enumeration value="Solldruck_Hauptluftleitung"/>
 			<xs:enumeration value="SteuerwagenFahrleitungsspannung"/>
 			<xs:enumeration value="SteuerwagenFahrstufe"/>
 			<xs:enumeration value="SteuerwagenHauptschalter"/>
@@ -288,9 +226,7 @@
 			<xs:enumeration value="DigitalFlowmeterB"/>
 			<xs:enumeration value="DigitalGauge"/>
 			<xs:enumeration value="DigitalGyrometer"/>
-			<xs:enumeration value="DigitalIntern"/>
 			<xs:enumeration value="DigitalManometer"/>
-			<xs:enumeration value="DigitalNextStop"/>
 			<xs:enumeration value="DigitalStreckenKm"/>
 			<xs:enumeration value="DigitalTachometer"/>
 			<xs:enumeration value="DigitalTorquemeter"/>
@@ -338,7 +274,6 @@
 		</xs:annotation>
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="RailRunner"/>
-			<xs:enumeration value="SwitchPointInfo"/>
 		</xs:restriction>
 	</xs:simpleType>
 
@@ -448,7 +383,7 @@
 			<xs:enumeration value="ComponentTuerenFreigabeText"/>
 			<xs:enumeration value="ComponentTuerenText"/>
 			<xs:enumeration value="ComponentZugbeeinflussungText"/>
-      <xs:enumeration value="ComponentZugbeeinflussungPZB_LZBText"/>
+      <xs:enumeration value="ComponentPZB_LZBText"/>
 		</xs:restriction>
 	</xs:simpleType>
 
@@ -576,7 +511,6 @@
 			<xs:extension base="ct_gauge_base">
 				<xs:attribute name="sizeX" type="xs:int" default="4"/>
 				<xs:attribute name="type" type="st_digitalgaugetype"/>
-				<xs:attribute name="volume" type="xs:double" use="optional"/>
 				<xs:attribute name="NumDecimals" type="xs:unsignedInt"/>
 				<xs:attribute name="DialScale" type="xs:double"/>
 				<xs:attribute name="SelectedVariant" type="xs:unsignedInt"/>
@@ -614,8 +548,6 @@
 				<xs:attribute name="statusmelder" type="st_controllamp_id"/>
 				<xs:attribute name="steuerwagenid" type="st_controllamp_id"/>
 				<xs:attribute name="style" type="st_extragaugestyle"/>
-				<xs:attribute name="type" type="xs:string" use="optional"/>
-				<xs:attribute name="volume" type="xs:double" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -756,18 +688,6 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	
-	<!-- Leuchtmelder Sifa mit Ton -->
-	<xs:complexType name="ct_controllamp_soundedsifa">
-		<xs:annotation>
-			<xs:documentation>Leuchtmelder Sifa mit Ton</xs:documentation>
-		</xs:annotation>
-		<xs:complexContent>
-			<xs:extension base="ct_controllamp">
-				<xs:attribute name="type" type="xs:string" default="SoundedMelderSifa"/>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
 
 	<!-- Component-Typ -->
 	<xs:complexType name="ct_component">
@@ -862,7 +782,6 @@
 			<xs:element name="ControlLampGreen" type="ct_controllamp_green"/>
 			<xs:element name="ControlLampBlue" type="ct_controllamp_blue"/>
 			<xs:element name="ControlLampWhite" type="ct_controllamp_white"/>
-			<xs:element name="ControlLampSoundedSifa" type="ct_controllamp_soundedsifa"/>
 		</xs:choice>
 	</xs:complexType>
 
